@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" role="img" aria-label="YolUp">
+  <defs>
+    <linearGradient id="ylViolet" x1="14" y1="8" x2="52" y2="50" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#3F4FE0"/>
+    </linearGradient>
+    <linearGradient id="ylTeal" x1="34" y1="60" x2="64" y2="14" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0E9FBC"/>
+      <stop offset=".5" stop-color="#12B886"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+    <linearGradient id="ylStem" x1="30" y1="34" x2="56" y2="74" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2D7FF9"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <path d="M30 34h22a14 14 0 0 1 0 28H30a14 14 0 0 1 0-28Z" fill="url(#ylStem)"/>
+  <path d="M33.5 57.5 47.5 15l17 8L50.5 66Z" fill="url(#ylTeal)"/>
+  <path d="M23 63c9.5-11 15.5-23 30.5-33.5" stroke="#FFFFFF" stroke-width="6.5" stroke-linecap="round"/>
+  <path d="M49.5 21.5 67 13l-4.5 15.5Z" fill="#FFFFFF"/>
+  <path d="M13 8h21.5L57 40.5 43.5 51 13 8Z" fill="url(#ylViolet)"/>
+</svg>

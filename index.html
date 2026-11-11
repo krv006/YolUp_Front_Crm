@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="uz" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0A0F2D" />
+    <meta
+      name="description"
+      content="YolUp — o'quv markazlari uchun zamonaviy CRM. Learn Today, Go Further."
+    />
+    <title>YolUp — CRM</title>
+    <script>
+      // Mavzuni birinchi bo'yashdan oldin qo'llaymiz (miltillashsiz).
+      (function () {
+        try {
+          var raw = localStorage.getItem("yolup_theme");
+          var theme = raw ? (JSON.parse(raw).state || {}).theme : null;
+          if (theme !== "dark" && theme !== "light") {
+            theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.setAttribute("data-theme", theme);
+          document.documentElement.classList.toggle("dark", theme === "dark");
+        } catch (e) {
+          /* ignore */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

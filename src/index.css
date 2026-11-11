@@ -1,0 +1,434 @@
+/* ============================================================================
+ *  YolUp — design tokens (single source of truth)
+ *  Ported 1:1 from the design prototype `assets/css/tokens.css`.
+ *  Light and dark are independent contrast decisions (WCAG AA).
+ *
+ *  The `--background`, `--foreground`, ... aliases below re-point the older
+ *  shadcn/Tailwind semantic names at YolUp tokens so every existing
+ *  component keeps working while we migrate to the new primitives.
+ * ==========================================================================*/
+
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Manrope-500-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Manrope-500-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/Manrope-600-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/Manrope-600-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Manrope-700-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Manrope-700-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/Manrope-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/Manrope-800-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Inter-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Inter-400-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Inter-500-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Inter-500-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/Inter-600-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/Inter-600-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Inter-700-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Inter-700-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+
+    /* ---- Surfaces ---- */
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --surface-2: #eef1f8;
+    --surface-3: #e4e9f4;
+    --surface-inset: #f8f9fd;
+
+    /* ---- Text ---- */
+    --text: #0a0f2d;
+    --text-secondary: #414a6e;
+    --text-muted: #5d6890;
+    --text-on-dark: #f2f5ff;
+    --text-on-dark-secondary: #aeb6d8;
+    --text-on-brand: #ffffff;
+
+    /* ---- Lines ---- */
+    --border: #e2e7f2;
+    --border-strong: #cdd5e8;
+    --divider: #edf0f7;
+
+    /* ---- Brand ---- */
+    --brand-900: #0a0f2d;
+    --brand-800: #111838;
+    --brand-700: #16204a;
+    --brand-600: #1d2a5e;
+    --brand-500: #0072ff;
+    --brand-400: #00c6ff;
+    --brand-300: #7adcff;
+    --action: #0059e6;
+    --action-hover: #0047c3;
+    --action-active: #003da6;
+    --action-soft: #e7f0ff;
+    --action-soft-text: #0047c3;
+    --gradient-brand: linear-gradient(112deg, #0072ff 0%, #00c6ff 100%);
+    --gradient-hero: linear-gradient(155deg, #0a0f2d 0%, #12256b 48%, #0072ff 100%);
+
+    /* ---- Status ---- */
+    --success: #10b981;
+    --success-ink: #047857;
+    --success-soft: #e7f8f1;
+    --warning: #f59e0b;
+    --warning-ink: #92600a;
+    --warning-soft: #fdf3e3;
+    --danger: #ef4444;
+    --danger-ink: #b91c1c;
+    --danger-soft: #fdecec;
+    --info: #6d5ae6;
+    --info-soft: #eeeafd;
+    --neutral-soft: #eef1f8;
+
+    /* ---- Data-viz ---- */
+    --viz-1: #0072ff;
+    --viz-2: #00c6ff;
+    --viz-3: #10b981;
+    --viz-4: #6d5ae6;
+    --viz-5: #f59e0b;
+
+    /* ---- Type ---- */
+    --font-display: "Manrope", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+
+    /* ---- Layout ---- */
+    --sidebar-w: 264px;
+    --topbar-h: 60px;
+    --tabstrip-h: 42px;
+    --content-max: 1440px;
+    --focus-ring: 0 0 0 3px rgba(0, 114, 255, 0.35);
+
+    /* ---- Scrollbar ---- */
+    --scrollbar-thumb: #c6cfe4;
+    --scrollbar-thumb-hover: #a3b0cf;
+
+    /* ---- Sidebar nav (always navy, so these are theme-independent) ----
+     * Tailwind can't apply an opacity modifier to a `var(--x)` colour, so the
+     * translucent sidebar states are exposed as real rgba tokens instead. */
+    --nav-active: rgba(0, 114, 255, 0.16);
+    --nav-active-weak: rgba(0, 114, 255, 0.12);
+    --nav-count-active: rgba(0, 198, 255, 0.2);
+
+    /* ---- Legacy shadcn aliases → YolUp tokens ---- */
+    --radius: 10px;
+    --background: var(--bg);
+    --foreground: var(--text);
+    --card: var(--surface);
+    --card-foreground: var(--text);
+    --popover: var(--surface);
+    --popover-foreground: var(--text);
+    --primary: var(--action);
+    --primary-foreground: #ffffff;
+    --secondary: var(--surface-2);
+    --secondary-foreground: var(--text);
+    --muted: var(--surface-2);
+    --muted-foreground: var(--text-muted);
+    --accent: var(--surface-2);
+    --accent-foreground: var(--text);
+    --destructive: var(--danger);
+    --destructive-foreground: #ffffff;
+    --input: var(--border-strong);
+    --ring: var(--action);
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #070b1e;
+    --surface: #0e1430;
+    --surface-2: #151c3d;
+    --surface-3: #1c254c;
+    --surface-inset: #0a1028;
+
+    --text: #eef2ff;
+    --text-secondary: #b4bcd9;
+    --text-muted: #8f99c0;
+    --text-on-dark: #f2f5ff;
+    --text-on-dark-secondary: #aeb6d8;
+
+    --border: #232c55;
+    --border-strong: #324070;
+    --divider: #1a2246;
+
+    --action: #2d7ff9;
+    --action-hover: #4d93ff;
+    --action-active: #1c6ce8;
+    --action-soft: #142c5c;
+    --action-soft-text: #9cc4ff;
+
+    --success-soft: #0c2f26;
+    --success-ink: #34d399;
+    --warning-soft: #332508;
+    --warning-ink: #fbbf24;
+    --danger-soft: #3a1414;
+    --danger-ink: #f87171;
+    --info-soft: #221d45;
+    --neutral-soft: #151c3d;
+
+    --scrollbar-thumb: #2c3865;
+    --scrollbar-thumb-hover: #3f4d88;
+
+    --focus-ring: 0 0 0 3px rgba(0, 180, 255, 0.4);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Yupqa, mavzuga mos scrollbar (Firefox) */
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+
+  /* Yupqa scrollbar (Chromium / WebKit) — o'qlar yo'q, dumaloq thumb. */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    font-feature-settings: "rlig" 1, "calt" 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 6px;
+  }
+}
+
+@layer utilities {
+  /* Scrollbar yashirish — kontent baribir scroll bo'ladi (sidebar, tabstrip). */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* tabular figures for money / times / counts */
+  .money,
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .money-pos {
+    color: var(--success-ink);
+    font-weight: 600;
+  }
+  .money-neg {
+    color: var(--danger-ink);
+    font-weight: 600;
+  }
+
+  .od-truncate {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  /* Uzun sonli qatorlar (summa) konteynerga sig'masa, shrift o'zi
+     kichrayadi. Yuqori chegara bazaviy klassdan (§ `dims.value`)
+     katta bo'lmasin — shuning uchun maksimum shu yerda turadi. */
+  .od-fit {
+    font-size: clamp(0.78rem, 1.5vw, 1.25rem);
+  }
+  .od-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .bg-gradient-brand {
+    background-image: var(--gradient-brand);
+  }
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
+}
+
+@keyframes sheet-in-bottom {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Sheet grab-handle, only visible when the sheet is a bottom sheet. */
+.sheet-handle {
+  display: none;
+}
+@media (max-width: 767px) {
+  .sheet-handle {
+    display: block;
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--surface-3);
+    margin: 8px auto 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
