@@ -1,10 +1,10 @@
-import type { ReactNode } from "react";
-import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
+import type { ReactNode } from 'react';
+import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react';
 
-import { cn } from "@/shared/lib/cn";
-import { Skeleton } from "./skeleton";
+import { cn } from '@/shared/lib/cn';
+import { Skeleton } from './skeleton';
 
-export type SortDirection = "asc" | "desc";
+export type SortDirection = 'asc' | 'desc';
 
 export interface SortState {
   key: string;
@@ -16,7 +16,7 @@ export interface Column<T> {
   key: string;
   header: ReactNode;
   render: (row: T) => ReactNode;
-  align?: "left" | "right" | "center";
+  align?: 'left' | 'right' | 'center';
   sortable?: boolean;
   width?: string;
   className?: string;
@@ -37,10 +37,10 @@ interface DataTableProps<T> {
   rowClassName?: (row: T) => string | undefined;
 }
 
-const ALIGN: Record<"left" | "right" | "center", string> = {
-  left: "text-left",
-  right: "text-right",
-  center: "text-center",
+const ALIGN: Record<'left' | 'right' | 'center', string> = {
+  left: 'text-left',
+  right: 'text-right',
+  center: 'text-center',
 };
 
 /**
@@ -65,36 +65,45 @@ export function DataTable<T>({
         <thead>
           <tr className="border-b border-divider bg-surface-2/60">
             {columns.map((column) => {
-              const align = column.align ?? "left";
+              const align = column.align ?? 'left';
               const isSorted = sort?.key === column.key;
               return (
                 <th
                   key={column.key}
                   scope="col"
+                  aria-sort={
+                    isSorted
+                      ? sort?.direction === 'asc'
+                        ? 'ascending'
+                        : 'descending'
+                      : column.sortable
+                        ? 'none'
+                        : undefined
+                  }
                   style={column.width ? { width: column.width } : undefined}
                   className={cn(
                     // `relative` — `sr-only` sarlavhalar (masalan "Amallar") shu katakka
                     // bog'lanadi. Aks holda ular jadvalning scroll konteyneridan
                     // chiqib ketib, sahifada gorizontal scroll hosil qiladi.
-                    "relative whitespace-nowrap px-5 py-3 text-xs font-bold uppercase tracking-[0.05em] text-ink-muted",
+                    'relative whitespace-nowrap px-5 py-3 text-xs font-bold uppercase tracking-[0.05em] text-ink-muted',
                     ALIGN[align],
-                    column.headerClassName,
+                    column.headerClassName
                   )}
                 >
                   {column.sortable && onSortChange ? (
                     <button
                       type="button"
                       onClick={() => onSortChange(column.key)}
-                      aria-label={`${typeof column.header === "string" ? column.header : column.key} bo'yicha saralash`}
+                      aria-label={`${typeof column.header === 'string' ? column.header : column.key} bo'yicha saralash`}
                       className={cn(
-                        "inline-flex items-center gap-1.5 rounded-sm transition-colors hover:text-ink",
-                        isSorted && "text-ink",
-                        align === "right" && "flex-row-reverse",
+                        'inline-flex items-center gap-1.5 rounded-sm transition-colors hover:text-ink',
+                        isSorted && 'text-ink',
+                        align === 'right' && 'flex-row-reverse'
                       )}
                     >
                       {column.header}
                       {isSorted ? (
-                        sort?.direction === "asc" ? (
+                        sort?.direction === 'asc' ? (
                           <ArrowUp className="h-3.5 w-3.5" />
                         ) : (
                           <ArrowDown className="h-3.5 w-3.5" />
@@ -117,10 +126,7 @@ export function DataTable<T>({
             Array.from({ length: skeletonRows }).map((_, rowIndex) => (
               <tr key={`skeleton-${rowIndex}`} className="border-b border-divider last:border-0">
                 {columns.map((column) => (
-                  <td
-                    key={column.key}
-                    className={cn("px-5 py-4", ALIGN[column.align ?? "left"])}
-                  >
+                  <td key={column.key} className={cn('px-5 py-4', ALIGN[column.align ?? 'left'])}>
                     <Skeleton className="h-4 w-full max-w-[150px]" />
                   </td>
                 ))}
@@ -138,18 +144,18 @@ export function DataTable<T>({
                 key={rowKey(row)}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
                 className={cn(
-                  "border-b border-divider last:border-0 transition-colors hover:bg-surface-2/50",
-                  onRowClick && "cursor-pointer",
-                  rowClassName?.(row),
+                  'border-b border-divider last:border-0 transition-colors hover:bg-surface-2/50',
+                  onRowClick && 'cursor-pointer',
+                  rowClassName?.(row)
                 )}
               >
                 {columns.map((column) => (
                   <td
                     key={column.key}
                     className={cn(
-                      "px-5 py-3.5 align-middle text-ink",
-                      ALIGN[column.align ?? "left"],
-                      column.className,
+                      'px-5 py-3.5 align-middle text-ink',
+                      ALIGN[column.align ?? 'left'],
+                      column.className
                     )}
                   >
                     {column.render(row)}

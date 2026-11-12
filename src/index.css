@@ -138,6 +138,10 @@
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
+@font-face { font-family: "Onest"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/onest-v11-latin-regular.woff2") format("woff2"); }
+@font-face { font-family: "Onest"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/onest-v11-latin-500.woff2") format("woff2"); }
+@font-face { font-family: "Onest"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/onest-v11-latin-600.woff2") format("woff2"); }
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -147,72 +151,72 @@
     color-scheme: light;
 
     /* ---- Surfaces ---- */
-    --bg: #f4f6fb;
+    --bg: #f7f8fa;
     --surface: #ffffff;
-    --surface-2: #eef1f8;
-    --surface-3: #e4e9f4;
-    --surface-inset: #f8f9fd;
+    --surface-2: #f1f3f6;
+    --surface-3: #e8ebf0;
+    --surface-inset: #f7f8fa;
 
     /* ---- Text ---- */
-    --text: #0a0f2d;
-    --text-secondary: #414a6e;
-    --text-muted: #5d6890;
+    --text: #24264d;
+    --text-secondary: #545a66;
+    --text-muted: #626775;
     --text-on-dark: #f2f5ff;
     --text-on-dark-secondary: #aeb6d8;
     --text-on-brand: #ffffff;
 
     /* ---- Lines ---- */
-    --border: #e2e7f2;
-    --border-strong: #cdd5e8;
-    --divider: #edf0f7;
+    --border: #e8ebf0;
+    --border-strong: #dce0e6;
+    --divider: #e8ebf0;
 
     /* ---- Brand ---- */
-    --brand-900: #0a0f2d;
+    --brand-900: #24264d;
     --brand-800: #111838;
     --brand-700: #16204a;
     --brand-600: #1d2a5e;
-    --brand-500: #0072ff;
-    --brand-400: #00c6ff;
-    --brand-300: #7adcff;
-    --action: #0059e6;
-    --action-hover: #0047c3;
-    --action-active: #003da6;
-    --action-soft: #e7f0ff;
-    --action-soft-text: #0047c3;
+    --brand-500: #4567f5;
+    --brand-400: #6a85f7;
+    --brand-300: #bbc8fc;
+    --action: #4567f5;
+    --action-hover: #3a56e0;
+    --action-active: #2f45ba;
+    --action-soft: #eef2ff;
+    --action-soft-text: #3a56e0;
     --gradient-brand: linear-gradient(112deg, #0072ff 0%, #00c6ff 100%);
-    --gradient-hero: linear-gradient(155deg, #0a0f2d 0%, #12256b 48%, #0072ff 100%);
+    --gradient-hero: linear-gradient(155deg, #24264d 0%, #12256b 48%, #0072ff 100%);
 
     /* ---- Status ---- */
-    --success: #10b981;
-    --success-ink: #047857;
-    --success-soft: #e7f8f1;
-    --warning: #f59e0b;
-    --warning-ink: #92600a;
-    --warning-soft: #fdf3e3;
-    --danger: #ef4444;
-    --danger-ink: #b91c1c;
-    --danger-soft: #fdecec;
+    --success: #2c9a78;
+    --success-ink: #227a5f;
+    --success-soft: #eaf6f1;
+    --warning: #e09e1f;
+    --warning-ink: #8c5e12;
+    --warning-soft: #fef8eb;
+    --danger: #e5484d;
+    --danger-ink: #b93636;
+    --danger-soft: #fdeeee;
     --info: #6d5ae6;
     --info-soft: #eeeafd;
-    --neutral-soft: #eef1f8;
+    --neutral-soft: #f1f3f6;
 
     /* ---- Data-viz ---- */
     --viz-1: #0072ff;
     --viz-2: #00c6ff;
-    --viz-3: #10b981;
+    --viz-3: #2c9a78;
     --viz-4: #6d5ae6;
-    --viz-5: #f59e0b;
+    --viz-5: #e09e1f;
 
     /* ---- Type ---- */
-    --font-display: "Manrope", "Segoe UI", system-ui, sans-serif;
-    --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+    --font-display: "Onest", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Onest", "Segoe UI", system-ui, sans-serif;
 
     /* ---- Layout ---- */
     --sidebar-w: 264px;
     --topbar-h: 60px;
     --tabstrip-h: 42px;
     --content-max: 1440px;
-    --focus-ring: 0 0 0 3px rgba(0, 114, 255, 0.35);
+    --focus-ring: 0 0 0 3px rgba(69, 103, 245, 0.35);
 
     /* ---- Scrollbar ---- */
     --scrollbar-thumb: #c6cfe4;
@@ -221,9 +225,9 @@
     /* ---- Sidebar nav (always navy, so these are theme-independent) ----
      * Tailwind can't apply an opacity modifier to a `var(--x)` colour, so the
      * translucent sidebar states are exposed as real rgba tokens instead. */
-    --nav-active: rgba(0, 114, 255, 0.16);
-    --nav-active-weak: rgba(0, 114, 255, 0.12);
-    --nav-count-active: rgba(0, 198, 255, 0.2);
+    --nav-active: rgba(69, 103, 245, 0.16);
+    --nav-active-weak: rgba(69, 103, 245, 0.12);
+    --nav-count-active: rgba(106, 133, 247, 0.2);
 
     /* ---- Legacy shadcn aliases → YolUp tokens ---- */
     --radius: 10px;
@@ -250,27 +254,27 @@
   [data-theme="dark"] {
     color-scheme: dark;
 
-    --bg: #070b1e;
-    --surface: #0e1430;
-    --surface-2: #151c3d;
-    --surface-3: #1c254c;
-    --surface-inset: #0a1028;
+    --bg: #16172f;
+    --surface: #24264d;
+    --surface-2: #2a2c53;
+    --surface-3: #33365d;
+    --surface-inset: #1d1f3b;
 
-    --text: #eef2ff;
-    --text-secondary: #b4bcd9;
-    --text-muted: #8f99c0;
+    --text: #f7f8fa;
+    --text-secondary: #c5c7d8;
+    --text-muted: #9ea1bc;
     --text-on-dark: #f2f5ff;
     --text-on-dark-secondary: #aeb6d8;
 
-    --border: #232c55;
-    --border-strong: #324070;
-    --divider: #1a2246;
+    --border: #2a2c53;
+    --border-strong: #33365d;
+    --divider: #2a2c53;
 
-    --action: #2d7ff9;
-    --action-hover: #4d93ff;
-    --action-active: #1c6ce8;
-    --action-soft: #142c5c;
-    --action-soft-text: #9cc4ff;
+    --action: #4567f5;
+    --action-hover: #3a56e0;
+    --action-active: #2f45ba;
+    --action-soft: #303968;
+    --action-soft-text: #bbc8fc;
 
     --success-soft: #0c2f26;
     --success-ink: #34d399;
@@ -279,7 +283,7 @@
     --danger-soft: #3a1414;
     --danger-ink: #f87171;
     --info-soft: #221d45;
-    --neutral-soft: #151c3d;
+    --neutral-soft: #2a2c53;
 
     --scrollbar-thumb: #2c3865;
     --scrollbar-thumb-hover: #3f4d88;

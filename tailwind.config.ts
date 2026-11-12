@@ -11,8 +11,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Inter"', "Segoe UI", "system-ui", "sans-serif"],
-        display: ['"Manrope"', "Segoe UI", "system-ui", "sans-serif"],
+        sans: ['"Onest"', "Segoe UI", "system-ui", "sans-serif"],
+        display: ['"Onest"', "Segoe UI", "system-ui", "sans-serif"],
       },
       colors: {
         /* semantic (shadcn-compatible names) */

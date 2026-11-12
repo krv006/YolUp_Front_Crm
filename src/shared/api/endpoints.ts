@@ -22,6 +22,10 @@ export const ENDPOINTS = {
     block: (id: string) => `/tenants/${id}/block/`,
     unblock: (id: string) => `/tenants/${id}/unblock/`,
     subscription: (id: string) => `/tenants/${id}/subscription/`,
+    usage: (id: string) => `/tenants/${id}/usage/`,
+    owners: (id: string) => `/tenants/${id}/owners/`,
+    resetOwnerPassword: (id: string, userId: string) => `/tenants/${id}/owners/${userId}/reset-password/`,
+    audit: "/tenants/audit-logs/",
   },
 
   // Branches

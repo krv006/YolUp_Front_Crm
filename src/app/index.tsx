@@ -71,7 +71,16 @@ export default function App() {
   const isStaffManager = hasRole(['ceo', 'admin']);
   const isTeacher = hasRole(['teacher']);
   useEffect(() => {
-    if (!user || user.role === 'operator' || isStaffManager) return;
+    if (!user) return;
+    if (user.role === 'operator') {
+      if (!pathname.startsWith('/cpanel')) navigate({ to: '/cpanel/tenants', replace: true });
+      return;
+    }
+    if (pathname.startsWith('/cpanel')) {
+      navigate({ to: '/', replace: true });
+      return;
+    }
+    if (isStaffManager) return;
     const allowed = isTeacher ? ['/cabinet', '/groups', '/students', '/attendance'] : ['/cabinet'];
     const isAllowed = allowed.some(
       (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
