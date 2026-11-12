@@ -1,29 +1,24 @@
 /**
  * Backend rollari — `docs/BACKEND_API_SPEC.md` dagi 5 ta qatiy rol.
  */
-export const USER_ROLES = [
-  "ceo",
-  "admin",
-  "teacher",
-  "parent",
-  "student",
-] as const;
+export const USER_ROLES = ['operator', 'ceo', 'admin', 'teacher', 'parent', 'student'] as const;
 
 export type UserRole = (typeof USER_ROLES)[number];
 
 export const ROLE_LABELS: Record<UserRole, string> = {
-  ceo: "Bosh direktori",
-  admin: "Admin",
+  operator: 'Operator',
+  ceo: 'Bosh direktori',
+  admin: 'Admin',
   teacher: "O'qituvchi",
-  parent: "Ota-ona",
+  parent: 'Ota-ona',
   student: "O'quvchi",
 };
 
-export type Language = "uz" | "ru" | "en" | "kaa";
+export type Language = 'uz' | 'ru' | 'en' | 'kaa';
 
 export interface User {
   id: string;
-  tenant_id: string;
+  tenant_id: string | null;
   branch_id?: string | null;
   role: UserRole;
   first_name: string;
@@ -33,6 +28,7 @@ export interface User {
   email?: string | null;
   avatar_url?: string | null;
   is_active: boolean;
+  must_change_password?: boolean;
   is_email_verified: boolean;
   is_phone_verified: boolean;
   last_login_at?: string | null;

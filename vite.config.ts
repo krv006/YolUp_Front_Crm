@@ -1,7 +1,7 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
-import { fileURLToPath } from "url";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   server: {
@@ -17,18 +17,17 @@ export default defineConfig({
     open: true,
     proxy: {
       // Forward /api to the Django backend during development
-      "/api": {
-        target: "http://localhost:8000",
+      '/api': {
+        target: 'https://api.yolup.uz',
         changeOrigin: true,
-        secure: false,
-        rewrite: (p) => p.replace(/^\/api/, ""),
+        secure: true,
       },
     },
   },
   build: {
-    outDir: "dist",
+    outDir: 'dist',
     sourcemap: true,
-    minify: "esbuild",
+    minify: 'esbuild',
     reportCompressedSize: true,
     rollupOptions: {
       output: {
@@ -37,12 +36,12 @@ export default defineConfig({
          * keshda turgan og'ir kutubxonalarni qayta yuklamaydi.
          */
         manualChunks(id) {
-          if (!id.includes("node_modules")) return undefined;
-          if (id.includes("@tanstack")) return "tanstack";
-          if (id.includes("@radix-ui")) return "radix";
-          if (id.includes("date-fns")) return "date-fns";
-          if (id.includes("lucide-react")) return "icons";
-          return "vendor";
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('@tanstack')) return 'tanstack';
+          if (id.includes('@radix-ui')) return 'radix';
+          if (id.includes('date-fns')) return 'date-fns';
+          if (id.includes('lucide-react')) return 'icons';
+          return 'vendor';
         },
       },
     },

@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-import { Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from 'react';
+import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
 
-import { useAuthStore, useSession } from "@/core/auth";
-import { usePermission } from "@/core/permission";
-import { AUTH_EXPIRED_EVENT, ENDPOINTS, http } from "@/shared/api";
-import { tokenStorage } from "@/shared/lib/token-storage";
-import { useThemeStore } from "@/shared/model";
-import type { Tenant } from "@/modules/tenants";
-import { AuthLayout, DashboardLayout } from "@/app/layouts";
-import LoginPage from "@/pages/login";
+import { useAuthStore, useSession, useLogout } from '@/core/auth';
+import { usePermission } from '@/core/permission';
+import { AUTH_EXPIRED_EVENT } from '@/shared/api';
+import { tokenStorage } from '@/shared/lib/token-storage';
+import { useThemeStore } from '@/shared/model';
+import { AuthLayout, DashboardLayout } from '@/app/layouts';
+import LoginPage from '@/pages/login';
+import OperatorPanel from '@/pages/operator';
+import PasswordChange from '@/core/auth/ui/password-change';
 
 function BootSplash() {
   return (
@@ -33,6 +33,7 @@ export default function App() {
   // Token faqat birinchi renderda o'qiladi (login dan keyin sahifa qayta yuklanadi).
   const [hasToken] = useState(() => Boolean(tokenStorage.getAccess()));
   const session = useSession(hasToken);
+  const logout = useLogout();
 
   // Mavzuni DOM ga qo'llaymiz (localStorage dan tiklangandan keyin).
   useEffect(() => {
@@ -40,18 +41,13 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const tenantId = user?.tenant_id ?? null;
-
-  const { data: tenant = null } = useQuery<Tenant | null>({
-    queryKey: ["context", "tenant", tenantId],
-    enabled: Boolean(tenantId),
-    retry: false,
-    queryFn: () => http.get<Tenant>(ENDPOINTS.tenants.byId(tenantId as string)),
-  });
-
   // Sessiya tiklandi — foydalanuvchini store ga yozamiz.
   useEffect(() => {
-    if (session.data) setUser(session.data);
+    if (session.data) {
+      setUser(session.data);
+      if (session.data.tenant_id) tokenStorage.setTenantId(session.data.tenant_id);
+      else tokenStorage.removeTenantId();
+    }
   }, [session.data, setUser]);
 
   // Token muddati tugasa (axios interceptor) — tizimdan chiqaramiz.
@@ -72,17 +68,15 @@ export default function App() {
    * ota-ona esa faqat shaxsiy kabinetga kiritiladi. Boshqa manzil — kabinetga
    * qaytariladi.
    */
-  const isStaffManager = hasRole(["ceo", "admin"]);
-  const isTeacher = hasRole(["teacher"]);
+  const isStaffManager = hasRole(['ceo', 'admin']);
+  const isTeacher = hasRole(['teacher']);
   useEffect(() => {
-    if (!user || isStaffManager) return;
-    const allowed = isTeacher
-      ? ["/cabinet", "/groups", "/students", "/attendance"]
-      : ["/cabinet"];
+    if (!user || user.role === 'operator' || isStaffManager) return;
+    const allowed = isTeacher ? ['/cabinet', '/groups', '/students', '/attendance'] : ['/cabinet'];
     const isAllowed = allowed.some(
-      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
     );
-    if (!isAllowed) navigate({ to: "/cabinet", replace: true });
+    if (!isAllowed) navigate({ to: '/cabinet', replace: true });
   }, [user, isStaffManager, isTeacher, pathname, navigate]);
 
   // `/auth/me/` javobini kutamiz — shu vaqt ichida spinner.
@@ -97,16 +91,22 @@ export default function App() {
     );
   }
 
+  if (user.must_change_password)
+    return (
+      <PasswordChange onDone={() => void session.refetch()} onLogout={() => logout.mutate()} />
+    );
+  if (user.role === 'operator') return <OperatorPanel onLogout={() => logout.mutate()} />;
+
   const hasPermission = (permission: string) => can(permission as never);
   const hasRoleFn = (role: string) => hasRole([role as never]);
 
   return (
     <DashboardLayout
       user={user}
-      tenant={tenant}
+      tenant={null}
       hasPermission={hasPermission}
       hasRole={hasRoleFn}
-      onLogout={signOut}
+      onLogout={() => logout.mutate()}
     >
       <Outlet />
     </DashboardLayout>
