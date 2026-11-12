@@ -151,6 +151,7 @@ export function StudentTable({
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
+                  disabled
                   onSelect={() => onDelete(student)}
                   className="text-danger-ink focus:bg-danger-soft"
                 >

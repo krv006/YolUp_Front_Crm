@@ -1,13 +1,7 @@
 /**
  * Lead (mijoz/ariza) modeli — CRM pipeline.
  */
-export type LeadStatus =
-  | "new"
-  | "connected"
-  | "not_connected"
-  | "trial"
-  | "enrolled"
-  | "rejected";
+export type LeadStatus = "new" | "contacted" | "enrolled" | "lost";
 
 /** Tizim bosqichlari — har birida doimiy kalit va rang bo'ladi. */
 export type SystemLeadStage = "open" | "waiting" | "trial" | "won" | "lost";
@@ -40,14 +34,14 @@ export interface Lead {
   /** Lid qaysi maktabdan kelgani (ixtiyoriy) — `schools` katalogiga bog'lanadi. */
   school_id?: string | null;
   first_name: string;
-  last_name?: string | null;
+  last_name: string;
   phone: string;
   extra_phones?: string[] | null;
   birth_date?: string | null;
   age?: number | null;
   teacher_id?: string | null;
   lesson_time?: string | null;
-  lesson_day_type?: "odd" | "even" | "custom" | null;
+  lesson_day_type?: "odd" | "even" | "any" | null;
   status: LeadStatus;
   stage: LeadStage;
   temperature?: "cold" | "warm" | "hot" | null;

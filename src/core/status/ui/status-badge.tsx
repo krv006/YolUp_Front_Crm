@@ -35,6 +35,7 @@ const STATUS: Record<string, { label: string; tone: Tone }> = {
   lost: { label: "Yutqizdi", tone: "danger" },
   waiting: { label: "Kutilmoqda", tone: "warning" },
   new: { label: "Yangi", tone: "brand" },
+  contacted: { label: "Bog'landi", tone: "info" },
   connected: { label: "Bog'landi", tone: "info" },
   not_connected: { label: "Bog'lanmadi", tone: "warning" },
   enrolled: { label: "Ro'yxatga olindi", tone: "success" },

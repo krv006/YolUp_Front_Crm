@@ -81,7 +81,7 @@ export function LeadForm({
           <Input id={`${formId}-first_name`} placeholder="Dilshod" {...register("first_name")} />
         </FormField>
 
-        <FormField id={`${formId}-last_name`} label="Familiya" error={errors.last_name?.message}>
+        <FormField id={`${formId}-last_name`} label="Familiya" required error={errors.last_name?.message}>
           <Input id={`${formId}-last_name`} placeholder="Nazarov" {...register("last_name")} />
         </FormField>
       </div>

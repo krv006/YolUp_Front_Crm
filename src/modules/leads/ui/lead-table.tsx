@@ -160,6 +160,7 @@ export function LeadTable({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
+                disabled
                 onSelect={() => onDelete(lead)}
                 className="text-danger-ink focus:bg-danger-soft"
               >
