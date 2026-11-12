@@ -1,13 +1,13 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Info } from "lucide-react";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Info } from 'lucide-react';
 
-import { FormField } from "@/shared/ui/form-field";
-import { Input } from "@/shared/ui/input";
-import { SwitchField } from "@/shared/ui/switch-field";
-import { Textarea } from "@/shared/ui/textarea";
-import { formatNumber } from "@/shared/lib";
-import { courseSchema, type CourseValues } from "../model/schemas";
+import { FormField } from '@/shared/ui/form-field';
+import { Input } from '@/shared/ui/input';
+import { SwitchField } from '@/shared/ui/switch-field';
+import { Textarea } from '@/shared/ui/textarea';
+import { formatNumber } from '@/shared/lib';
+import { courseSchema, type CourseValues } from '../model/schemas';
 
 interface CourseFormProps {
   /** Sheet footer submits this form by id. */
@@ -54,9 +54,9 @@ export function CourseForm({
   } = useForm<CourseValues>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
-      name: "",
-      code: "",
-      description: "",
+      name: '',
+      code: '',
+      description: '',
       price_som: 0,
       is_active: true,
       ...defaultValues,
@@ -66,9 +66,9 @@ export function CourseForm({
   /* Kod bandligi — backend unique cheklovini kutmasdan tekshiriladi
      (API bir xil holatda 400 `{code: [...]}` qaytaradi). */
   const submit = handleSubmit((values) => {
-    const code = (values.code ?? "").trim().toUpperCase();
+    const code = (values.code ?? '').trim().toUpperCase();
     if (code.length > 0 && takenCodes.includes(code)) {
-      setError("code", { message: "Bu kod band — boshqa kod tanlang" });
+      setError('code', { message: 'Bu kod band — boshqa kod tanlang' });
       return;
     }
     onSubmit(values);
@@ -76,21 +76,16 @@ export function CourseForm({
 
   /* Bir darsning o'rtacha narxi — narx, davomiylik va darslar sonidan
      hisoblanadi (mahsulotning asosiy solishtirma ko'rsatkichi). */
-  const [price, months, lessons] = watch(["price_som", "duration_months", "lessons_count"]);
+  const [price, months, lessons] = watch(['price_som', 'duration_months', 'lessons_count']);
   const perLesson = averageLessonPrice(price, months, lessons);
 
   return (
     <form id={formId} onSubmit={submit} className="grid gap-4" noValidate>
-      <FormField
-        id={`${formId}-name`}
-        label="Kurs nomi"
-        required
-        error={errors.name?.message}
-      >
+      <FormField id={`${formId}-name`} label="Kurs nomi" required error={errors.name?.message}>
         <Input
           id={`${formId}-name`}
           placeholder="Ingliz tili — umumiy kurs"
-          {...register("name")}
+          {...register('name')}
         />
       </FormField>
 
@@ -98,14 +93,15 @@ export function CourseForm({
         <FormField
           id={`${formId}-code`}
           label="Kod"
+          required
           hint="Hisobot va qidiruv uchun qisqa nom"
           error={errors.code?.message}
         >
           <Input
             id={`${formId}-code`}
             placeholder="ENG"
-            maxLength={12}
-            {...register("code", { onChange: () => clearErrors("code") })}
+            maxLength={30}
+            {...register('code', { onChange: () => clearErrors('code') })}
           />
         </FormField>
 
@@ -116,7 +112,7 @@ export function CourseForm({
           hint={
             perLesson != null
               ? `≈ ${formatNumber(perLesson)} so'm — 1 dars uchun`
-              : "1 dars narxi davomiylik va darslar sonidan hisoblanadi"
+              : '1 dars narxi davomiylik va darslar sonidan hisoblanadi'
           }
           error={errors.price_som?.message}
         >
@@ -126,7 +122,7 @@ export function CourseForm({
             min={0}
             step={10_000}
             inputMode="numeric"
-            {...register("price_som")}
+            {...register('price_som')}
           />
         </FormField>
       </div>
@@ -135,7 +131,7 @@ export function CourseForm({
         <FormField
           id={`${formId}-duration_months`}
           label="Davomiyligi (oy)"
-          hint="Ixtiyoriy"
+          required
           error={errors.duration_months?.message}
         >
           <Input
@@ -145,13 +141,14 @@ export function CourseForm({
             max={60}
             inputMode="numeric"
             placeholder="9"
-            {...register("duration_months")}
+            {...register('duration_months')}
           />
         </FormField>
 
         <FormField
           id={`${formId}-lessons_count`}
           label="Darslar soni"
+          required
           hint="Kursdagi umumiy darslar"
           error={errors.lessons_count?.message}
         >
@@ -162,7 +159,7 @@ export function CourseForm({
             max={1000}
             inputMode="numeric"
             placeholder="72"
-            {...register("lessons_count")}
+            {...register('lessons_count')}
           />
         </FormField>
       </div>
@@ -177,7 +174,7 @@ export function CourseForm({
           id={`${formId}-description`}
           rows={3}
           placeholder="Boshlang'ich daraja uchun umumiy ingliz tili kursi"
-          {...register("description")}
+          {...register('description')}
         />
       </FormField>
 
@@ -192,9 +189,9 @@ export function CourseForm({
         <div className="flex gap-2.5 rounded-md border border-border bg-surface-2 p-3">
           <Info className="mt-0.5 h-4 w-4 flex-none text-info" aria-hidden="true" />
           <p className="text-xs leading-relaxed text-ink-secondary">
-            Bu kursga <span className="font-semibold text-ink">{groupsCount} ta guruh</span>{" "}
-            bog'langan. Narx o'zgarishi mavjud guruhlarga ta'sir qilmaydi — har bir guruh
-            narxi alohida saqlanadi.
+            Bu kursga <span className="font-semibold text-ink">{groupsCount} ta guruh</span>{' '}
+            bog'langan. Narx o'zgarishi mavjud guruhlarga ta'sir qilmaydi — har bir guruh narxi
+            alohida saqlanadi.
           </p>
         </div>
       )}

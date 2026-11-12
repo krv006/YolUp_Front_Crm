@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { LayoutGrid, List, Plus, UserCog, Users } from "lucide-react";
+import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { LayoutGrid, List, Plus, UserCog, Users } from 'lucide-react';
 
 import {
   GroupCard,
@@ -11,24 +11,24 @@ import {
   useGroupList,
   useGroupUpdate,
   type Group,
-} from "@/modules/groups";
-import { usePermission } from "@/core/permission";
-import { useBranchList } from "@/modules/branches";
-import { useCourseList } from "@/modules/courses";
-import { useRoomList } from "@/modules/rooms";
-import { useUserList } from "@/modules/users";
-import { Button } from "@/shared/ui/button";
-import { Card } from "@/shared/ui/card";
-import { ConfirmModal } from "@/shared/ui/modal";
-import { EmptyState } from "@/shared/ui/empty-state";
-import { ListToolbar } from "@/shared/ui/list-toolbar";
-import { PageHeader } from "@/shared/ui/page-header";
-import { Pagination } from "@/shared/ui/pagination";
-import { Select } from "@/shared/ui/select";
-import { StatCard } from "@/shared/ui/stat-card";
-import { Tabs } from "@/shared/ui/tabs";
-import { formatNumber } from "@/shared/lib";
-import { useListState } from "@/shared/model";
+} from '@/modules/groups';
+import { usePermission } from '@/core/permission';
+import { useBranchList } from '@/modules/branches';
+import { useCourseList } from '@/modules/courses';
+import { useRoomList } from '@/modules/rooms';
+import { useUserList } from '@/modules/users';
+import { Button } from '@/shared/ui/button';
+import { Card } from '@/shared/ui/card';
+import { ConfirmModal } from '@/shared/ui/modal';
+import { EmptyState } from '@/shared/ui/empty-state';
+import { ListToolbar } from '@/shared/ui/list-toolbar';
+import { PageHeader } from '@/shared/ui/page-header';
+import { Pagination } from '@/shared/ui/pagination';
+import { Select } from '@/shared/ui/select';
+import { StatCard } from '@/shared/ui/stat-card';
+import { Tabs } from '@/shared/ui/tabs';
+import { formatNumber } from '@/shared/lib';
+import { useListState } from '@/shared/model';
 
 /** Ko'rsatkichlar uchun barcha guruhlar (markaz bo'yicha yig'indi). */
 const STATS_PARAMS = { page: 1, page_size: 100 };
@@ -36,11 +36,11 @@ const STATS_PARAMS = { page: 1, page_size: 100 };
 export default function GroupsPage() {
   const navigate = useNavigate();
   const list = useListState({ pageSize: 12 });
-  const [view, setView] = useState<"cards" | "table">("cards");
+  const [view, setView] = useState<'cards' | 'table'>('cards');
   const { can } = usePermission();
-  const canCreate = can("groups.create");
-  const canUpdate = can("groups.update");
-  const canDelete = can("groups.delete");
+  const canCreate = can('groups.create');
+  const canUpdate = can('groups.update');
+  const canDelete = can('groups.delete');
   const canManage = canUpdate || canDelete;
 
   const { data, isLoading } = useGroupList(list.params);
@@ -51,19 +51,19 @@ export default function GroupsPage() {
   const allGroups = statsData?.results ?? [];
   const { data: branchesData } = useBranchList({ page: 1, page_size: 100 });
   const { data: coursesData } = useCourseList({ page: 1, page_size: 100 });
-  const { data: roomsData } = useRoomList({ page: 1, page_size: 100, is_active: "true" });
-  const { data: teachersData } = useUserList({ role: "teacher", page: 1, page_size: 100 });
+  const { data: roomsData } = useRoomList({ page: 1, page_size: 100, is_active: 'true' });
+  const { data: teachersData } = useUserList({ role: 'teacher', page: 1, page_size: 100 });
 
   const branches = branchesData?.results ?? [];
   const courses = coursesData?.results ?? [];
   const rooms = roomsData?.results ?? [];
   const teachers = teachersData?.results ?? [];
 
-  const activeCount = allGroups.filter((group) => group.status === "active").length;
+  const activeCount = allGroups.filter((group) => group.status === 'active').length;
   const studentTotal = allGroups.reduce((sum, group) => sum + (group.students_count ?? 0), 0);
   const seatTotal = allGroups.reduce((sum, group) => sum + (group.capacity ?? 0), 0);
   const teachersWithoutGroup = teachers.filter(
-    (teacher) => !allGroups.some((group) => group.teacher_id === teacher.id),
+    (teacher) => !allGroups.some((group) => group.teacher_id === teacher.id)
   ).length;
   const occupancy = seatTotal > 0 ? Math.round((studentTotal / seatTotal) * 100) : 0;
 
@@ -72,11 +72,12 @@ export default function GroupsPage() {
   const [deleting, setDeleting] = useState<Group | null>(null);
 
   const create = useGroupCreate(() => setCreating(false));
-  const update = useGroupUpdate(editing?.id ?? "", () => setEditing(null));
+  const update = useGroupUpdate(editing?.id ?? '', () => setEditing(null));
   const remove = useGroupDelete(() => setDeleting(null));
 
   const filtered = Boolean(list.search || list.activeFilterCount);
-  const openGroup = (group: Group) => navigate({ to: "/groups/$groupId", params: { groupId: group.id } });
+  const openGroup = (group: Group) =>
+    navigate({ to: '/groups/$groupId', params: { groupId: group.id } });
 
   const closeForm = () => {
     setCreating(false);
@@ -127,7 +128,7 @@ export default function GroupsPage() {
           label="Guruhsiz o'qituvchilar"
           value={formatNumber(teachersWithoutGroup)}
           hint={`${teachers.length} ta o'qituvchi ichida`}
-          tone={teachersWithoutGroup > 0 ? "warning" : "neutral"}
+          tone={teachersWithoutGroup > 0 ? 'warning' : 'neutral'}
           icon={<UserCog className="h-5 w-5" />}
         />
       </div>
@@ -142,10 +143,10 @@ export default function GroupsPage() {
             variant="pill"
             label="Ko'rinish"
             value={view}
-            onChange={(value) => setView(value as "cards" | "table")}
+            onChange={(value) => setView(value as 'cards' | 'table')}
             items={[
-              { value: "cards", label: "Kartalar", icon: <LayoutGrid className="h-4 w-4" /> },
-              { value: "table", label: "Jadval", icon: <List className="h-4 w-4" /> },
+              { value: 'cards', label: 'Kartalar', icon: <LayoutGrid className="h-4 w-4" /> },
+              { value: 'table', label: 'Jadval', icon: <List className="h-4 w-4" /> },
             ]}
           />
         }
@@ -154,8 +155,8 @@ export default function GroupsPage() {
             key="course"
             aria-label="Kurs bo'yicha filtr"
             className="h-9 text-sm"
-            value={list.filters.course_id ?? ""}
-            onChange={(event) => list.setFilter("course_id", event.target.value)}
+            value={list.filters.course_id ?? ''}
+            onChange={(event) => list.setFilter('course_id', event.target.value)}
           >
             <option value="">Barcha kurslar</option>
             {courses.map((course) => (
@@ -168,8 +169,8 @@ export default function GroupsPage() {
             key="teacher"
             aria-label="O'qituvchi bo'yicha filtr"
             className="h-9 text-sm"
-            value={list.filters.teacher_id ?? ""}
-            onChange={(event) => list.setFilter("teacher_id", event.target.value)}
+            value={list.filters.teacher_id ?? ''}
+            onChange={(event) => list.setFilter('teacher_id', event.target.value)}
           >
             <option value="">Barcha o'qituvchilar</option>
             {teachers.map((teacher) => (
@@ -182,19 +183,18 @@ export default function GroupsPage() {
             key="status"
             aria-label="Holat bo'yicha filtr"
             className="h-9 text-sm"
-            value={list.filters.status ?? ""}
-            onChange={(event) => list.setFilter("status", event.target.value)}
+            value={list.filters.status ?? ''}
+            onChange={(event) => list.setFilter('status', event.target.value)}
           >
             <option value="">Barcha holat</option>
             <option value="active">Faol</option>
             <option value="planned">Rejalashtirilgan</option>
             <option value="completed">Tugallangan</option>
-            <option value="archived">Arxiv</option>
           </Select>,
         ]}
       />
 
-      {view === "cards" ? (
+      {view === 'cards' ? (
         groups.length === 0 && !isLoading ? (
           <Card>
             <EmptyState
@@ -273,9 +273,7 @@ export default function GroupsPage() {
         onOpenChange={(open) => !open && setDeleting(null)}
         title="Guruhni o'chirish"
         description={
-          deleting
-            ? `${deleting.name} guruhi o'chiriladi. O'quvchilar guruhsiz qoladi.`
-            : undefined
+          deleting ? `${deleting.name} guruhi o'chiriladi. O'quvchilar guruhsiz qoladi.` : undefined
         }
         confirmLabel="O'chirish"
         loading={remove.isPending}

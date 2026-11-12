@@ -1,20 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarClock, Check, Clock, Users } from "lucide-react";
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CalendarClock, Check, Clock, Users } from 'lucide-react';
 
-import { cn } from "@/shared/lib/cn";
+import { cn } from '@/shared/lib/cn';
 import {
   WEEKDAY_OPTIONS,
   addMinutes,
   durationMinutes,
   normalizeTime,
   scheduleSummary,
-} from "@/shared/lib/schedule";
-import { FormField } from "@/shared/ui/form-field";
-import { Input } from "@/shared/ui/input";
-import { Select } from "@/shared/ui/select";
-import { groupSchema, type GroupValues } from "../model/schemas";
+} from '@/shared/lib/schedule';
+import { FormField } from '@/shared/ui/form-field';
+import { Input } from '@/shared/ui/input';
+import { Select } from '@/shared/ui/select';
+import { groupSchema, type GroupValues } from '../model/schemas';
 
 export interface Option {
   id: string;
@@ -26,19 +26,17 @@ export interface Option {
 }
 
 /** Swatches offered for the group colour dot. */
-const COLORS = ["#2563eb", "#7c3aed", "#059669", "#ea580c", "#dc2626", "#0891b2"];
+const COLORS = ['#2563eb', '#7c3aed', '#059669', '#ea580c', '#dc2626', '#0891b2'];
 
-const BILLING_MODES: Array<{ value: GroupValues["billing_mode"]; label: string }> = [
-  { value: "monthly_calendar", label: "Oylik — kalendar oyi bo'yicha" },
-  { value: "monthly_from_enrollment", label: "Oylik — qo'shilgan sanadan" },
-  { value: "per_lesson", label: "Har bir dars uchun" },
+const BILLING_MODES: Array<{ value: GroupValues['billing_mode']; label: string }> = [
+  { value: 'monthly_calendar', label: "Oylik — kalendar oyi bo'yicha" },
+  { value: 'per_lesson', label: 'Har bir dars uchun' },
 ];
 
-const STATUSES: Array<{ value: GroupValues["status"]; label: string }> = [
-  { value: "planned", label: "Rejalashtirilgan" },
-  { value: "active", label: "Faol" },
-  { value: "completed", label: "Tugallangan" },
-  { value: "archived", label: "Arxiv" },
+const STATUSES: Array<{ value: GroupValues['status']; label: string }> = [
+  { value: 'planned', label: 'Rejalashtirilgan' },
+  { value: 'active', label: 'Faol' },
+  { value: 'completed', label: 'Tugallangan' },
 ];
 
 interface GroupFormProps {
@@ -75,34 +73,31 @@ export function GroupForm({
   } = useForm<GroupValues>({
     resolver: zodResolver(groupSchema),
     defaultValues: {
-      branch_id: "",
-      course_id: "",
-      name: "",
+      branch_id: '',
+      course_id: '',
+      name: '',
       color: COLORS[0],
-      room_id: "",
+      room_id: '',
       capacity: 0,
       price_som: 0,
-      start_date: "",
-      end_date: "",
-      billing_mode: "monthly_calendar",
-      status: "active",
+      start_date: '',
+      end_date: '',
+      billing_mode: 'monthly_calendar',
+      status: 'active',
       schedule: [],
       ...defaultValues,
     },
   });
 
-  const schedule = watch("schedule") ?? [];
-  const branchId = watch("branch_id");
-  const roomId = watch("room_id");
+  const schedule = watch('schedule') ?? [];
+  const branchId = watch('branch_id');
+  const roomId = watch('room_id');
 
   const initialSlot = (defaultValues?.schedule ?? [])[0];
-  const [startTime, setStartTime] = useState(() => normalizeTime(initialSlot?.start_time, "09:00"));
-  const [endTime, setEndTime] = useState(() => normalizeTime(initialSlot?.end_time, "10:30"));
+  const [startTime, setStartTime] = useState(() => normalizeTime(initialSlot?.start_time, '09:00'));
+  const [endTime, setEndTime] = useState(() => normalizeTime(initialSlot?.end_time, '10:30'));
 
-  const selectedDays = useMemo(
-    () => schedule.map((slot) => Number(slot.day_of_week)),
-    [schedule],
-  );
+  const selectedDays = useMemo(() => schedule.map((slot) => Number(slot.day_of_week)), [schedule]);
   const minutes = durationMinutes(startTime, endTime);
 
   /** Tanlangan kunlarga joriy vaqtni qo'llaydi. */
@@ -112,7 +107,7 @@ export function GroupForm({
       start_time: start,
       end_time: end,
     }));
-    setValue("schedule", ordered, { shouldValidate: true, shouldDirty: true });
+    setValue('schedule', ordered, { shouldValidate: true, shouldDirty: true });
   };
 
   const toggleDay = (day: number) => {
@@ -142,12 +137,12 @@ export function GroupForm({
     if (!roomId || !branchId) return;
     const room = rooms.find((item) => item.id === roomId);
     if (room?.branchId && room.branchId !== branchId) {
-      setValue("room_id", "", { shouldDirty: true });
+      setValue('room_id', '', { shouldDirty: true });
     }
   }, [branchId, roomId, rooms, setValue]);
 
   const roomOptions = rooms.filter(
-    (room) => !branchId || !room.branchId || room.branchId === branchId,
+    (room) => !branchId || !room.branchId || room.branchId === branchId
   );
   const selectedRoom = rooms.find((room) => room.id === roomId);
 
@@ -157,7 +152,7 @@ export function GroupForm({
         <Input
           id={`${formId}-name`}
           placeholder="Ingliz tili — Beginner A1"
-          {...register("name")}
+          {...register('name')}
         />
       </FormField>
 
@@ -168,7 +163,7 @@ export function GroupForm({
           required
           error={errors.branch_id?.message}
         >
-          <Select id={`${formId}-branch_id`} {...register("branch_id")}>
+          <Select id={`${formId}-branch_id`} {...register('branch_id')}>
             <option value="">Filialni tanlang…</option>
             {branches.map((branch) => (
               <option key={branch.id} value={branch.id}>
@@ -184,7 +179,7 @@ export function GroupForm({
           required
           error={errors.course_id?.message}
         >
-          <Select id={`${formId}-course_id`} {...register("course_id")}>
+          <Select id={`${formId}-course_id`} {...register('course_id')}>
             <option value="">Kursni tanlang…</option>
             {courses.map((course) => (
               <option key={course.id} value={course.id}>
@@ -218,10 +213,10 @@ export function GroupForm({
                 title={day.label}
                 onClick={() => toggleDay(day.value)}
                 className={cn(
-                  "min-w-[46px] rounded-md border px-2.5 py-1.5 text-xs font-semibold transition-colors",
+                  'min-w-[46px] rounded-md border px-2.5 py-1.5 text-xs font-semibold transition-colors',
                   active
-                    ? "border-action bg-action text-white"
-                    : "border-border bg-surface text-ink-secondary hover:border-border-strong",
+                    ? 'border-action bg-action text-white'
+                    : 'border-border bg-surface text-ink-secondary hover:border-border-strong'
                 )}
               >
                 {day.short}
@@ -264,7 +259,7 @@ export function GroupForm({
           <Clock className="h-3.5 w-3.5" />
           {selectedDays.length > 0
             ? scheduleSummary(schedule)
-            : "Hali kun tanlanmagan — faol guruh uchun kamida bitta kun kerak."}
+            : 'Hali kun tanlanmagan — faol guruh uchun kamida bitta kun kerak.'}
         </p>
 
         {errors.schedule?.message ? (
@@ -279,10 +274,10 @@ export function GroupForm({
         <FormField
           id={`${formId}-room_id`}
           label="Xona"
-          hint={selectedRoom?.capacity ? `Xona sig'imi: ${selectedRoom.capacity}` : "Ixtiyoriy"}
+          hint={selectedRoom?.capacity ? `Xona sig'imi: ${selectedRoom.capacity}` : 'Ixtiyoriy'}
           error={errors.room_id?.message}
         >
-          <Select id={`${formId}-room_id`} {...register("room_id")}>
+          <Select id={`${formId}-room_id`} {...register('room_id')}>
             <option value="">Xona tanlanmagan</option>
             {roomOptions.map((room) => (
               <option key={room.id} value={room.id}>
@@ -305,7 +300,7 @@ export function GroupForm({
             max={1000}
             step={1}
             inputMode="numeric"
-            {...register("capacity")}
+            {...register('capacity')}
           />
         </FormField>
       </div>
@@ -323,7 +318,7 @@ export function GroupForm({
             min={0}
             step={10_000}
             inputMode="numeric"
-            {...register("price_som")}
+            {...register('price_som')}
           />
         </FormField>
 
@@ -333,7 +328,7 @@ export function GroupForm({
           required
           error={errors.billing_mode?.message}
         >
-          <Select id={`${formId}-billing_mode`} {...register("billing_mode")}>
+          <Select id={`${formId}-billing_mode`} {...register('billing_mode')}>
             {BILLING_MODES.map((mode) => (
               <option key={mode.value} value={mode.value}>
                 {mode.label}
@@ -350,7 +345,7 @@ export function GroupForm({
           required
           error={errors.start_date?.message}
         >
-          <Input id={`${formId}-start_date`} type="date" {...register("start_date")} />
+          <Input id={`${formId}-start_date`} type="date" {...register('start_date')} />
         </FormField>
 
         <FormField
@@ -359,12 +354,12 @@ export function GroupForm({
           hint="Ixtiyoriy"
           error={errors.end_date?.message}
         >
-          <Input id={`${formId}-end_date`} type="date" {...register("end_date")} />
+          <Input id={`${formId}-end_date`} type="date" {...register('end_date')} />
         </FormField>
       </div>
 
       <FormField id={`${formId}-status`} label="Holat" required error={errors.status?.message}>
-        <Select id={`${formId}-status`} {...register("status")}>
+        <Select id={`${formId}-status`} {...register('status')}>
           {STATUSES.map((status) => (
             <option key={status.value} value={status.value}>
               {status.label}
@@ -390,8 +385,8 @@ export function GroupForm({
                     aria-label={`Rang ${color}`}
                     onClick={() => field.onChange(color)}
                     className={cn(
-                      "flex h-9 w-9 items-center justify-center rounded-full border-2 transition-transform",
-                      active ? "border-ink scale-105" : "border-transparent",
+                      'flex h-9 w-9 items-center justify-center rounded-full border-2 transition-transform',
+                      active ? 'border-ink scale-105' : 'border-transparent'
                     )}
                     style={{ backgroundColor: color }}
                   >
@@ -406,8 +401,8 @@ export function GroupForm({
 
       <p className="flex items-start gap-2 rounded-md bg-surface-2 px-3 py-2 text-xs text-ink-muted">
         <Users className="mt-0.5 h-3.5 w-3.5 flex-none" />
-        O'qituvchi guruh sahifasida biriktiriladi. Jadval o'zgarsa, kelgusi darslar
-        avtomatik yangilanadi.
+        O'qituvchi guruh sahifasida biriktiriladi. Jadval o'zgarsa, kelgusi darslar avtomatik
+        yangilanadi.
       </p>
 
       <button type="submit" className="sr-only" tabIndex={-1} aria-hidden="true">

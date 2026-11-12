@@ -59,11 +59,18 @@ export function normalizeError(error: AxiosError<DrfErrorPayload>): ApiError {
   const detail = firstString((payload as { detail?: unknown }).detail);
 
   const fieldErrors: Record<string, string> = {};
-  for (const [key, value] of Object.entries(payload)) {
-    if (key === 'detail') continue;
-    const text = firstString(value);
-    if (text) fieldErrors[key] = text;
+  function collectFieldErrors(value: unknown, path: string) {
+    const message = firstString(value);
+    if (message && path) {
+      fieldErrors[path] = message;
+    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+      for (const [key, nested] of Object.entries(value)) {
+        if (!path && (key === 'detail' || key === 'code')) continue;
+        collectFieldErrors(nested, path ? `${path}.${key}` : key);
+      }
+    }
   }
+  collectFieldErrors(payload, '');
 
   const nonField = fieldErrors.non_field_errors;
   const hasFieldErrors = Object.keys(fieldErrors).length > 0;
