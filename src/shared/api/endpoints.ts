@@ -257,6 +257,6 @@ export const ENDPOINTS = {
 
   // Dashboard (CEO overview)
   dashboard: {
-    overview: "/dashboard/overview/",
+    overview: "/dashboard/",
   },
 } as const;

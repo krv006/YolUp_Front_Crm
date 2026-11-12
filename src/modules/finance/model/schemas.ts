@@ -22,7 +22,7 @@ export function paymentPayload(values: PaymentValues): Record<string, unknown> {
     ...stripEmpty(rest as Record<string, unknown>),
     amount_tiyin: somToTiyin(amount_som),
     // Ikki marta yuborilishdan himoya — har bir to'lov uchun yangi kalit.
-    idempotency_key: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+    idempotency_key: crypto.randomUUID(),
   };
 }
 

@@ -1,404 +1,186 @@
-import { useState } from "react";
-import {
-  Banknote,
-  CalendarCheck,
-  GraduationCap,
-  TrendingDown,
-  TrendingUp,
-  Wallet,
-} from "lucide-react";
+﻿import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { ENDPOINTS, http } from '@/shared/api';
+import { Card } from '@/shared/ui/card';
+import { PageHeader } from '@/shared/ui/page-header';
+import { Button } from '@/shared/ui/button';
+import { formatMoney, formatNumber } from '@/shared/lib';
 
-import {
-  useAttendanceReport,
-  useFinanceReport,
-  useLeadsReport,
-  usePayrollReport,
-  useStudentsReport,
-} from "@/modules/reports";
-import { StatusBadge } from "@/core/status";
-import { Card, CardBody, CardHeader, CardSub, CardTitle } from "@/shared/ui/card";
-import { EmptyState } from "@/shared/ui/empty-state";
-import { PageHeader } from "@/shared/ui/page-header";
-import { Progress, occupancyTone, type ProgressTone } from "@/shared/ui/progress";
-import { StatCard } from "@/shared/ui/stat-card";
-import { Tabs } from "@/shared/ui/tabs";
-import { formatMoney, formatNumber } from "@/shared/lib";
-
-type ReportTab = "finance" | "students" | "leads" | "attendance" | "payroll";
-
-const EMPTY = {};
-
-/** Nom + qiymatdan iborat gorizontal taqsimot qatori. */
-function BreakdownRow({
-  label,
-  value,
-  percent,
-  tone,
-}: {
-  label: string;
-  value: string;
-  percent?: number;
-  tone?: ProgressTone;
-}) {
-  return (
-    <li className="grid gap-2 border-b border-divider py-3 last:border-0 last:pb-0">
-      <div className="flex items-center justify-between gap-4 text-sm">
-        <span className="od-truncate font-semibold text-ink-secondary">{label}</span>
-        <span className="money flex-none font-semibold text-ink">{value}</span>
-      </div>
-      {percent !== undefined && (
-        <Progress
-          value={percent}
-          tone={tone ?? occupancyTone(percent)}
-          label={`${label} ulushi`}
-        />
-      )}
-    </li>
-  );
-}
+type Finance = {
+  revenue_tiyin: number;
+  expenses_tiyin: number;
+  net_profit_tiyin: number;
+  by_payment_method: { method: string; amount: number }[];
+};
+type Students = {
+  totals: {
+    total: number;
+    active: number;
+    frozen: number;
+    new_students: number;
+    left_students: number;
+  };
+  results: { group_id: string; group_name: string; active_students: number }[];
+  next: string | null;
+};
+type Leads = {
+  totals: { total: number; won: number; lost: number; conversion_rate: number };
+  by_stage: { stage: string; name: string; count: number }[];
+};
+type Attendance = {
+  totals: { lessons: number; present: number; absent: number; attendance_rate: number };
+  results: { group_id: string; group_name: string; attendance_rate: number }[];
+  next: string | null;
+};
+type Payroll = {
+  totals: { payrolls: number; final_amount_tiyin: number };
+  results: { id: string; user_name: string; final_amount_tiyin: number; state: string }[];
+  next: string | null;
+};
+type Tab = 'finance' | 'students' | 'leads' | 'attendance' | 'payroll';
 
 export default function ReportsPage() {
-  const [tab, setTab] = useState<ReportTab>("finance");
-
-  const { data: finance } = useFinanceReport(EMPTY);
-  const { data: students } = useStudentsReport(EMPTY);
-  const { data: leads } = useLeadsReport(EMPTY);
-  const { data: attendance } = useAttendanceReport(EMPTY);
-  const { data: payroll } = usePayrollReport(EMPTY);
-
+  const [tab, setTab] = useState<Tab>('finance');
+  const [page, setPage] = useState(1);
+  const report = useQuery({
+    queryKey: ['report', tab, page],
+    queryFn: () =>
+      http.get<Finance | Students | Leads | Attendance | Payroll>(ENDPOINTS.reports[tab], {
+        params: { page, page_size: 20 },
+      }),
+  });
+  const data = report.data;
+  const metric = (label: string, value: string) => (
+    <div className="rounded-md border p-4">
+      <p className="text-sm text-ink-muted">{label}</p>
+      <p className="text-xl font-semibold">{value}</p>
+    </div>
+  );
   return (
     <div className="grid gap-5">
-      <PageHeader
-        title="Hisobotlar"
-        subtitle="Moliya, o'quvchilar, lidlar, davomat va ish haqi"
-      />
-
-      <Tabs
-        variant="pill"
-        label="Hisobot bo'limi"
-        value={tab}
-        onChange={(value) => setTab(value as ReportTab)}
-        items={[
-          { value: "finance", label: "Moliya", icon: <Wallet className="h-4 w-4" /> },
-          { value: "students", label: "O'quvchilar", icon: <GraduationCap className="h-4 w-4" /> },
-          { value: "leads", label: "Lidlar", icon: <TrendingUp className="h-4 w-4" /> },
-          { value: "attendance", label: "Davomat", icon: <CalendarCheck className="h-4 w-4" /> },
-          { value: "payroll", label: "Ish haqi", icon: <Banknote className="h-4 w-4" /> },
-        ]}
-      />
-
-      {tab === "finance" && (
-        <>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <StatCard
-              label="Tushum"
-              value={formatMoney(finance?.revenue_tiyin ?? 0)}
-              tone="success"
-              icon={<TrendingUp className="h-5 w-5" />}
-            />
-            <StatCard
-              label="Xarajat"
-              value={formatMoney(finance?.expenses_tiyin ?? 0)}
-              tone="danger"
-              icon={<TrendingDown className="h-5 w-5" />}
-            />
-            <StatCard
-              label="Sof foyda"
-              value={formatMoney(finance?.net_profit_tiyin ?? 0)}
-              tone={(finance?.net_profit_tiyin ?? 0) >= 0 ? "info" : "danger"}
-              icon={<Wallet className="h-5 w-5" />}
-            />
-          </div>
-
-          <div className="grid gap-5 xl:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <div>
-                  <CardTitle>To'lov usullari</CardTitle>
-                  <CardSub>Usul bo'yicha tushum taqsimoti</CardSub>
-                </div>
-              </CardHeader>
-              <CardBody>
-                {(finance?.by_payment_method.length ?? 0) === 0 ? (
-                  <EmptyState
-                    icon={<Wallet className="h-6 w-6" />}
-                    title="Ma'lumot yo'q"
-                    description="To'lovlar qabul qilinganda taqsimot shu yerda ko'rinadi."
-                  />
-                ) : (
-                  <ul className="grid">
-                    {finance?.by_payment_method.map((item) => {
-                      const total = finance.revenue_tiyin || 1;
-                      const percent = Math.round((item.amount / total) * 100);
-                      return (
-                        <BreakdownRow
-                          key={item.method}
-                          label={item.method}
-                          value={formatMoney(item.amount)}
-                          percent={percent}
-                        />
-                      );
-                    })}
-                  </ul>
-                )}
-              </CardBody>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <div>
-                  <CardTitle>Eng katta to'lovlar</CardTitle>
-                  <CardSub>O'quvchi bo'yicha jami</CardSub>
-                </div>
-              </CardHeader>
-              <CardBody>
-                {(finance?.by_student.length ?? 0) === 0 ? (
-                  <EmptyState
-                    icon={<GraduationCap className="h-6 w-6" />}
-                    title="Ma'lumot yo'q"
-                    description="O'quvchi bo'yicha to'lovlar shu yerda ko'rinadi."
-                  />
-                ) : (
-                  <ul className="grid">
-                    {finance?.by_student.map((item) => {
-                      const top = finance.by_student[0]?.amount || 1;
-                      return (
-                        <BreakdownRow
-                          key={item.student_id}
-                          label={item.student_name}
-                          value={formatMoney(item.amount)}
-                          percent={Math.round((item.amount / top) * 100)}
-                        />
-                      );
-                    })}
-                  </ul>
-                )}
-              </CardBody>
-            </Card>
-          </div>
-        </>
+      <PageHeader title="Hisobotlar" subtitle="Joriy oy bo'yicha hisobotlar" />
+      <div className="flex flex-wrap gap-2">
+        {(
+          [
+            ['finance', 'Moliya'],
+            ['students', "O'quvchilar"],
+            ['leads', 'Lidlar'],
+            ['attendance', 'Davomat'],
+            ['payroll', 'Ish haqi'],
+          ] as const
+        ).map(([key, title]) => (
+          <Button
+            key={key}
+            variant={tab === key ? 'primary' : 'outline'}
+            onClick={() => {
+              setTab(key);
+              setPage(1);
+            }}
+          >
+            {title}
+          </Button>
+        ))}
+      </div>
+      {report.isLoading && <p>Yuklanmoqda...</p>}
+      {report.isError && (
+        <Card className="p-4">
+          <p role="alert">Hisobotni yuklab bo'lmadi.</p>
+          <Button variant="ghost" onClick={() => void report.refetch()}>
+            Qayta urinish
+          </Button>
+        </Card>
       )}
-
-      {tab === "students" && (
+      {data && tab === 'finance' && 'revenue_tiyin' in data && (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <StatCard
-              label="Jami o'quvchi"
-              value={formatNumber(students?.total_students ?? 0)}
-              icon={<GraduationCap className="h-5 w-5" />}
-            />
-            <StatCard
-              label="Faol"
-              value={formatNumber(students?.active_students ?? 0)}
-              tone="success"
-              icon={<GraduationCap className="h-5 w-5" />}
-            />
-            <StatCard
-              label="Muzlatilgan"
-              value={formatNumber(students?.frozen_students ?? 0)}
-              tone="warning"
-              icon={<GraduationCap className="h-5 w-5" />}
-            />
-            <StatCard
-              label="Umumiy qarz"
-              value={formatMoney(students?.total_debt_tiyin ?? 0)}
-              tone="danger"
-              icon={<TrendingDown className="h-5 w-5" />}
-            />
+          <div className="grid gap-3 sm:grid-cols-3">
+            {metric('Tushum', formatMoney(data.revenue_tiyin))}
+            {metric('Xarajat', formatMoney(data.expenses_tiyin))}
+            {metric('Foyda', formatMoney(data.net_profit_tiyin))}
           </div>
-
-          <Card>
-            <CardHeader>
-              <div>
-                <CardTitle>Holat bo'yicha taqsimot</CardTitle>
-                <CardSub>Jami {formatNumber(students?.total_students ?? 0)} o'quvchi</CardSub>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <ul className="grid">
-                {[
-                  { label: "Faol", value: students?.active_students ?? 0 },
-                  { label: "Muzlatilgan", value: students?.frozen_students ?? 0 },
-                  { label: "Ketgan", value: students?.left_students ?? 0 },
-                  { label: "Bitirgan", value: students?.graduates ?? 0 },
-                ].map((item) => {
-                  const total = students?.total_students || 1;
-                  return (
-                    <BreakdownRow
-                      key={item.label}
-                      label={item.label}
-                      value={formatNumber(item.value)}
-                      percent={Math.round((item.value / total) * 100)}
-                    />
-                  );
-                })}
-              </ul>
-            </CardBody>
+          <Card className="grid gap-2 p-4">
+            <h2 className="font-bold">To'lov turlari</h2>
+            {data.by_payment_method.map((row) => (
+              <p key={row.method}>
+                {row.method}: {formatMoney(row.amount)}
+              </p>
+            ))}
           </Card>
         </>
       )}
-
-      {tab === "leads" && (
+      {data && tab === 'students' && 'totals' in data && 'active' in data.totals && (
         <>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <StatCard
-              label="Jami lidlar"
-              value={formatNumber(leads?.total_leads ?? 0)}
-              icon={<TrendingUp className="h-5 w-5" />}
-            />
-            <StatCard
-              label="Konversiya"
-              value={`${leads?.conversion_rate ?? 0}%`}
-              tone="success"
-              icon={<TrendingUp className="h-5 w-5" />}
-            />
-            <StatCard
-              label="Manbalar"
-              value={formatNumber(leads?.by_source.length ?? 0)}
-              tone="info"
-              icon={<TrendingUp className="h-5 w-5" />}
-            />
+          <div className="grid gap-3 sm:grid-cols-3">
+            {metric('Jami', formatNumber(data.totals.total))}
+            {metric('Faol', formatNumber(data.totals.active))}
+            {metric('Yangi', formatNumber(data.totals.new_students))}
           </div>
-
-          <div className="grid gap-5 xl:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <div>
-                  <CardTitle>Bosqichlar</CardTitle>
-                  <CardSub>Kanban bosqichlari bo'yicha</CardSub>
-                </div>
-              </CardHeader>
-              <CardBody>
-                <ul className="grid">
-                  {leads?.by_stage.map((item) => {
-                    const total = leads.total_leads || 1;
-                    return (
-                      <BreakdownRow
-                        key={item.stage}
-                        label={item.stage}
-                        value={formatNumber(item.count)}
-                        percent={Math.round((item.count / total) * 100)}
-                      />
-                    );
-                  })}
-                </ul>
-              </CardBody>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <div>
-                  <CardTitle>Manbalar</CardTitle>
-                  <CardSub>Lid qayerdan kelgan</CardSub>
-                </div>
-              </CardHeader>
-              <CardBody>
-                <ul className="grid">
-                  {leads?.by_source.map((item) => {
-                    const total = leads.total_leads || 1;
-                    return (
-                      <BreakdownRow
-                        key={item.source}
-                        label={item.source}
-                        value={formatNumber(item.count)}
-                        percent={Math.round((item.count / total) * 100)}
-                      />
-                    );
-                  })}
-                </ul>
-              </CardBody>
-            </Card>
-          </div>
-        </>
-      )}
-
-      {tab === "attendance" && (
-        <>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <StatCard
-              label="Darslar"
-              value={formatNumber(attendance?.total_lessons ?? 0)}
-              icon={<CalendarCheck className="h-5 w-5" />}
-            />
-            <StatCard
-              label="Qatnashish darajasi"
-              value={`${attendance?.attendance_rate ?? 0}%`}
-              tone="success"
-              icon={<CalendarCheck className="h-5 w-5" />}
-            />
-          </div>
-
-          <Card>
-            <CardHeader>
-              <div>
-                <CardTitle>Guruhlar bo'yicha qatnashuv</CardTitle>
-                <CardSub>Keldi va kechikdi hisobga olinadi</CardSub>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <ul className="grid">
-                {attendance?.by_group.map((item) => (
-                  <BreakdownRow
-                    key={item.group_id}
-                    label={item.group_name}
-                    value={`${item.rate}%`}
-                    percent={item.rate}
-                  />
-                ))}
-              </ul>
-            </CardBody>
+          <Card className="grid gap-2 p-4">
+            {(data as Students).results.map((row) => (
+              <p key={row.group_id}>
+                {row.group_name}: {formatNumber(row.active_students)}
+              </p>
+            ))}
           </Card>
         </>
       )}
-
-      {tab === "payroll" && (
+      {data && tab === 'leads' && 'by_stage' in data && (
         <>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <StatCard
-              label="Jami ish haqi"
-              value={formatMoney(payroll?.total_payroll_tiyin ?? 0)}
-              icon={<Banknote className="h-5 w-5" />}
-            />
-            <StatCard
-              label="Xodimlar"
-              value={formatNumber(payroll?.by_teacher.length ?? 0)}
-              tone="info"
-              icon={<Banknote className="h-5 w-5" />}
-            />
+          <div className="grid gap-3 sm:grid-cols-3">
+            {metric('Jami lidlar', formatNumber(data.totals.total))}
+            {metric('Qabul qilingan', formatNumber(data.totals.won))}
+            {metric('Konversiya', `${Math.round(data.totals.conversion_rate * 100)}%`)}
           </div>
-
-          <Card>
-            <CardHeader>
-              <div>
-                <CardTitle>Xodim bo'yicha</CardTitle>
-                <CardSub>Yakuniy summalar</CardSub>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <ul className="grid">
-                {payroll?.by_teacher.map((item) => {
-                  const top = payroll.by_teacher[0]?.amount || 1;
-                  return (
-                    <BreakdownRow
-                      key={item.teacher_id}
-                      label={item.teacher_name}
-                      value={formatMoney(item.amount)}
-                      percent={Math.round((item.amount / top) * 100)}
-                    />
-                  );
-                })}
-              </ul>
-            </CardBody>
+          <Card className="grid gap-2 p-4">
+            {data.by_stage.map((row) => (
+              <p key={row.stage}>
+                {row.name}: {formatNumber(row.count)}
+              </p>
+            ))}
           </Card>
         </>
       )}
-
-      <Card className="p-4">
-        <p className="flex items-center gap-2 text-sm text-ink-muted">
-          <StatusBadge status="active" />
-          Hisobotlar real vaqtda demo ma'lumotlardan hisoblanadi.
-        </p>
-      </Card>
+      {data && tab === 'attendance' && 'totals' in data && 'attendance_rate' in data.totals && (
+        <>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {metric('Darslar', formatNumber(data.totals.lessons))}
+            {metric('Davomat', `${Math.round(data.totals.attendance_rate * 100)}%`)}
+            {metric("Yo'q", formatNumber(data.totals.absent))}
+          </div>
+          <Card className="grid gap-2 p-4">
+            {(data as Attendance).results.map((row) => (
+              <p key={row.group_id}>
+                {row.group_name}: {Math.round(row.attendance_rate * 100)}%
+              </p>
+            ))}
+          </Card>
+        </>
+      )}
+      {data && tab === 'payroll' && 'totals' in data && 'payrolls' in data.totals && (
+        <>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {metric('Hisob-kitoblar', formatNumber(data.totals.payrolls))}
+            {metric('Jami ish haqi', formatMoney(data.totals.final_amount_tiyin))}
+          </div>
+          <Card className="grid gap-2 p-4">
+            {(data as Payroll).results.map((row) => (
+              <p key={row.id}>
+                {row.user_name}: {formatMoney(row.final_amount_tiyin)} · {row.state}
+              </p>
+            ))}
+          </Card>
+        </>
+      )}
+      {data && 'next' in data && (
+        <div className="flex gap-3">
+          <Button variant="outline" disabled={page === 1} onClick={() => setPage(page - 1)}>
+            Oldingi
+          </Button>
+          <span>{page}</span>
+          <Button variant="outline" disabled={!data.next} onClick={() => setPage(page + 1)}>
+            Keyingi
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
