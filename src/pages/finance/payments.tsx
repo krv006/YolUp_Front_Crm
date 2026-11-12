@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Receipt, TrendingUp, Wallet } from "lucide-react";
+import { useState } from 'react';
+import { Receipt, TrendingUp, Wallet } from 'lucide-react';
 
 import {
   PaymentForm,
@@ -10,16 +10,16 @@ import {
   usePaymentMethodList,
   type Payment,
   type PaymentValues,
-} from "@/modules/finance";
-import { useGroupList } from "@/modules/groups";
-import { useStudentList } from "@/modules/students";
-import { StatusBadge } from "@/core/status";
-import { Button } from "@/shared/ui/button";
-import { Card } from "@/shared/ui/card";
-import { PageHeader } from "@/shared/ui/page-header";
-import { Pagination } from "@/shared/ui/pagination";
-import { SearchInput } from "@/shared/ui/search-input";
-import { Select } from "@/shared/ui/select";
+} from '@/modules/finance';
+import { useGroupList } from '@/modules/groups';
+import { useStudentList } from '@/modules/students';
+import { StatusBadge } from '@/core/status';
+import { Button } from '@/shared/ui/button';
+import { Card } from '@/shared/ui/card';
+import { PageHeader } from '@/shared/ui/page-header';
+import { Pagination } from '@/shared/ui/pagination';
+import { SearchInput } from '@/shared/ui/search-input';
+import { Select } from '@/shared/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -28,12 +28,12 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/shared/ui/sheet";
-import { StatCard } from "@/shared/ui/stat-card";
-import { formatDateTime, formatMoney } from "@/shared/lib";
-import { useListState } from "@/shared/model";
+} from '@/shared/ui/sheet';
+import { StatCard } from '@/shared/ui/stat-card';
+import { formatDateTime, formatMoney } from '@/shared/lib';
+import { useListState } from '@/shared/model';
 
-const PAYMENT_FORM_ID = "payment-form";
+const PAYMENT_FORM_ID = 'payment-form';
 
 export default function FinancePaymentsPage() {
   const list = useListState({ pageSize: 10 });
@@ -46,7 +46,7 @@ export default function FinancePaymentsPage() {
   const { data: methodsData } = usePaymentMethodList({
     page: 1,
     page_size: 50,
-    is_active: "true",
+    is_active: 'true',
   });
 
   const payments = page?.results ?? [];
@@ -126,8 +126,8 @@ export default function FinancePaymentsPage() {
 
           <Select
             aria-label="To'lov turi bo'yicha filtr"
-            value={list.filters.method ?? ""}
-            onChange={(event) => list.setFilter("method", event.target.value)}
+            value={list.filters.method ?? ''}
+            onChange={(event) => list.setFilter('method', event.target.value)}
             className="h-9 text-sm"
             wrapperClassName="w-auto min-w-[170px]"
           >
@@ -185,7 +185,7 @@ export default function FinancePaymentsPage() {
 
           <SheetBody>
             <PaymentForm
-              key={paymentOpen ? "open" : "closed"}
+              key={paymentOpen ? 'open' : 'closed'}
               formId={PAYMENT_FORM_ID}
               students={studentOptions}
               groups={groupOptions}
@@ -216,7 +216,9 @@ export default function FinancePaymentsPage() {
               <Receipt className="h-5 w-5" />
             </span>
             <div>
-              <SheetTitle>{receipt?.receipt_number ?? "Kvitansiya"}</SheetTitle>
+              <SheetTitle>
+                {receipt?.receipt_no ?? receipt?.receipt_number ?? 'Kvitansiya'}
+              </SheetTitle>
               <SheetDescription>{receipt?.student_name ?? "To'lov tafsilotlari"}</SheetDescription>
             </div>
           </SheetHeader>
@@ -238,11 +240,15 @@ export default function FinancePaymentsPage() {
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-muted">Guruh</dt>
-                  <dd className="od-truncate font-semibold text-ink">{receipt.group_name ?? "—"}</dd>
+                  <dd className="od-truncate font-semibold text-ink">
+                    {receipt.group_name ?? '—'}
+                  </dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-muted">Vaqt</dt>
-                  <dd className="money font-semibold text-ink">{formatDateTime(receipt.paid_at)}</dd>
+                  <dd className="money font-semibold text-ink">
+                    {formatDateTime(receipt.paid_at)}
+                  </dd>
                 </div>
               </dl>
             )}

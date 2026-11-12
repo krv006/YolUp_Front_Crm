@@ -1,11 +1,11 @@
-import { Receipt, Wallet } from "lucide-react";
+import { Receipt, Wallet } from 'lucide-react';
 
-import { StatusBadge } from "@/core/status";
-import { Button } from "@/shared/ui/button";
-import { DataTable, type Column, type SortState } from "@/shared/ui/data-table";
-import { EmptyState } from "@/shared/ui/empty-state";
-import { formatDateTime, formatMoney } from "@/shared/lib";
-import type { Payment } from "../model/types";
+import { StatusBadge } from '@/core/status';
+import { Button } from '@/shared/ui/button';
+import { DataTable, type Column, type SortState } from '@/shared/ui/data-table';
+import { EmptyState } from '@/shared/ui/empty-state';
+import { formatDateTime, formatMoney } from '@/shared/lib';
+import type { Payment } from '../model/types';
 
 interface PaymentTableProps {
   payments: Payment[];
@@ -33,38 +33,36 @@ export function PaymentTable({
 }: PaymentTableProps) {
   const columns: Column<Payment>[] = [
     {
-      key: "student_name",
+      key: 'student_name',
       header: "O'quvchi",
       sortable: true,
       render: (payment) => (
         <div className="min-w-0">
-          <p className="od-truncate font-semibold text-ink">
-            {payment.student_name ?? "O'quvchi"}
-          </p>
+          <p className="od-truncate font-semibold text-ink">{payment.student_name ?? "O'quvchi"}</p>
           <p className="money od-truncate text-xs text-ink-muted">
-            {payment.receipt_number ?? payment.id.slice(-8)}
+            {payment.receipt_no ?? payment.receipt_number ?? payment.id.slice(-8)}
           </p>
         </div>
       ),
     },
     {
-      key: "group_name",
-      header: "Guruh",
+      key: 'group_name',
+      header: 'Guruh',
       render: (payment) => (
-        <span className="od-truncate text-ink-secondary">{payment.group_name ?? "—"}</span>
+        <span className="od-truncate text-ink-secondary">{payment.group_name ?? '—'}</span>
       ),
     },
     {
-      key: "method",
-      header: "Usul",
+      key: 'method',
+      header: 'Usul',
       render: (payment) => (
         <StatusBadge status={payment.method} label={methodLabelOf?.(payment.method)} />
       ),
     },
     {
-      key: "amount_tiyin",
-      header: "Summa",
-      align: "right",
+      key: 'amount_tiyin',
+      header: 'Summa',
+      align: 'right',
       sortable: true,
       render: (payment) => (
         <span className="money font-semibold text-success-ink">
@@ -73,25 +71,25 @@ export function PaymentTable({
       ),
     },
     {
-      key: "paid_at",
-      header: "Vaqt",
-      align: "right",
+      key: 'paid_at',
+      header: 'Vaqt',
+      align: 'right',
       sortable: true,
       render: (payment) => (
         <span className="money text-ink-secondary">{formatDateTime(payment.paid_at)}</span>
       ),
     },
     {
-      key: "actions",
+      key: 'actions',
       header: <span className="sr-only">Amallar</span>,
-      align: "right",
-      width: "64px",
+      align: 'right',
+      width: '64px',
       render: (payment) => (
         <Button
           variant="ghost"
           size="icon-sm"
           onClick={() => onReceipt(payment)}
-          aria-label={`${payment.receipt_number ?? "To'lov"} kvitansiyasi`}
+          aria-label={`${payment.receipt_no ?? payment.receipt_number ?? "To'lov"} kvitansiyasi`}
         >
           <Receipt className="h-4 w-4" />
         </Button>

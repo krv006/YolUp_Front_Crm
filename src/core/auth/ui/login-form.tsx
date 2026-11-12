@@ -9,7 +9,6 @@ import { toastError, toastInfo } from '@/shared/lib/toast';
 import { cn } from '@/shared/lib/cn';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
-import { Switch } from '@/shared/ui/switch';
 import { loginSchema, type LoginValues } from '../model/schemas';
 
 interface LoginFormProps {
@@ -45,7 +44,6 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   const login = useLogin();
   const [mode, setMode] = useState<Mode>('phone');
   const [showPassword, setShowPassword] = useState(false);
-  const [remember, setRemember] = useState(true);
 
   const {
     register,
@@ -145,10 +143,6 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
       {/* Remember + reset */}
       <div className="flex items-center justify-between gap-3">
-        <label className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-secondary">
-          <Switch checked={remember} onCheckedChange={setRemember} />
-          Eslab qolish
-        </label>
         <button
           type="button"
           onClick={() => toastInfo('Parolni administratoringiz tiklab beradi')}
@@ -167,32 +161,34 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
        * (`admin` → direktor, `student` → o'quvchi kabineti, ...). Bu blok
        * haqiqiy backend ulanganda olib tashlanadi.
        */}
-      <div className="grid gap-2.5 rounded-md border border-border bg-surface-inset p-3">
-        <p className="text-xs font-semibold text-ink-secondary">
-          Demo hisoblar — rolni sinash uchun
-        </p>
-        <div className="flex flex-wrap gap-1.5">
-          {USE_MOCK_API &&
-            DEMO_ACCOUNTS.map((account) => (
-              <button
-                key={account.identifier}
-                type="button"
-                title={account.hint}
-                onClick={() => {
-                  setValue('identifier', account.identifier, { shouldDirty: true });
-                  setValue('password', account.password, { shouldDirty: true });
-                }}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border-strong bg-surface px-2.5 py-1 text-xs font-semibold text-ink-secondary transition-colors hover:border-action hover:text-action-soft-text"
-              >
-                <UserRound className="h-3 w-3" />
-                {account.label}
-              </button>
-            ))}
+      {USE_MOCK_API && (
+        <div className="grid gap-2.5 rounded-md border border-border bg-surface-inset p-3">
+          <p className="text-xs font-semibold text-ink-secondary">
+            Demo hisoblar — rolni sinash uchun
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {USE_MOCK_API &&
+              DEMO_ACCOUNTS.map((account) => (
+                <button
+                  key={account.identifier}
+                  type="button"
+                  title={account.hint}
+                  onClick={() => {
+                    setValue('identifier', account.identifier, { shouldDirty: true });
+                    setValue('password', account.password, { shouldDirty: true });
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border-strong bg-surface px-2.5 py-1 text-xs font-semibold text-ink-secondary transition-colors hover:border-action hover:text-action-soft-text"
+                >
+                  <UserRound className="h-3 w-3" />
+                  {account.label}
+                </button>
+              ))}
+          </div>
+          <p className="text-[11px] leading-snug text-ink-muted">
+            Hisobni tanlang — maydonlar to'ldiriladi, keyin <b>Kirish</b> bosing.
+          </p>
         </div>
-        <p className="text-[11px] leading-snug text-ink-muted">
-          Hisobni tanlang — maydonlar to'ldiriladi, keyin <b>Kirish</b> bosing.
-        </p>
-      </div>
+      )}
     </form>
   );
 }

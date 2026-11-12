@@ -1,10 +1,10 @@
 /**
  * Finance modellar — to'lov, xarajat, kassa, P&L.
  */
-export type PaymentMethod = "cash" | "card" | "click" | "payme" | "uzum" | "transfer";
+export type PaymentMethod = 'cash' | 'card' | 'click' | 'payme' | 'uzum' | 'transfer';
 /** Buxgalteriya guruhi — kassa hisobotlari shu bo'yicha yig'iladi. */
-export type PaymentMethodKind = "cash" | "card" | "online" | "transfer";
-export type ChargeStatus = "paid" | "partial" | "unpaid";
+export type PaymentMethodKind = 'cash' | 'card' | 'online' | 'transfer';
+export type ChargeStatus = 'paid' | 'partial' | 'unpaid';
 
 /** `/finance/payment-methods/` — to'lov turlari katalogi. */
 export interface PaymentMethodRecord {
@@ -37,6 +37,7 @@ export interface Payment {
   method: string;
   receipt_url?: string | null;
   receipt_number?: string | null;
+  receipt_no?: string | null;
   paid_at: string;
   created_by?: string | null;
   idempotency_key?: string;
@@ -126,7 +127,7 @@ export interface Discount {
   tenant_id: string;
   student_id: string;
   group_id?: string | null;
-  type: "percent" | "fixed";
+  type: 'percent' | 'fixed';
   value_tiyin?: number | null;
   value_percent?: number | null;
   valid_from: string;
@@ -164,7 +165,7 @@ export interface CashShift {
   closed_at?: string | null;
   expected_amount_tiyin?: number | null;
   actual_amount_tiyin?: number | null;
-  status: "open" | "closed";
+  status: 'open' | 'closed';
 }
 
 export interface PnL {
