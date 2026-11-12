@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { HandCoins, ReceiptText, TrendingDown, Users } from "lucide-react";
+import { useState } from 'react';
+import { HandCoins, ReceiptText, TrendingDown, Users } from 'lucide-react';
 
 import {
   DebtTable,
@@ -7,15 +7,15 @@ import {
   useChargeList,
   useDebtList,
   type DebtRow,
-} from "@/modules/finance";
-import { useBranchList } from "@/modules/branches";
-import { StatusBadge } from "@/core/status";
-import { Button } from "@/shared/ui/button";
-import { Card } from "@/shared/ui/card";
-import { PageHeader } from "@/shared/ui/page-header";
-import { Pagination } from "@/shared/ui/pagination";
-import { SearchInput } from "@/shared/ui/search-input";
-import { Select } from "@/shared/ui/select";
+} from '@/modules/finance';
+import { useBranchList } from '@/modules/branches';
+import { StatusBadge } from '@/core/status';
+import { Button } from '@/shared/ui/button';
+import { Card } from '@/shared/ui/card';
+import { PageHeader } from '@/shared/ui/page-header';
+import { Pagination } from '@/shared/ui/pagination';
+import { SearchInput } from '@/shared/ui/search-input';
+import { Select } from '@/shared/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -24,22 +24,23 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/shared/ui/sheet";
-import { StatCard } from "@/shared/ui/stat-card";
-import { Switch } from "@/shared/ui/switch";
-import { formatMoney, formatNumber } from "@/shared/lib";
-import { useListState } from "@/shared/model";
+} from '@/shared/ui/sheet';
+import { StatCard } from '@/shared/ui/stat-card';
+import { Switch } from '@/shared/ui/switch';
+import { formatMoney, formatNumber } from '@/shared/lib';
+import { useListState } from '@/shared/model';
 
 export default function FinanceDebtsPage() {
   /* Standart holat: faqat qarzi borlar ko'rsatiladi. */
-  const list = useListState({ pageSize: 10, filters: { only_debt: "true" } });
+  const list = useListState({ pageSize: 10, filters: { only_debt: 'true' } });
 
   const { data: page, isLoading } = useDebtList(list.params);
-  const { data: allDebts } = useDebtList({ page: 1, page_size: 500, only_debt: "true" });
+  const { data: allDebts } = useDebtList({ page: 1, page_size: 500, only_debt: 'true' });
   const { data: branchesData } = useBranchList({ page: 1, page_size: 100 });
 
   const debts = page?.results ?? [];
   const debtRows = allDebts?.results ?? [];
+  const totalsComplete = !!allDebts && allDebts.count <= debtRows.length;
 
   const totalDebt = debtRows.reduce((sum, row) => sum + row.debt_tiyin, 0);
   const overdue = debtRows.reduce((sum, row) => sum + row.overdue_tiyin, 0);
@@ -51,8 +52,8 @@ export default function FinanceDebtsPage() {
     name: branch.name,
   }));
 
-  const onlyDebt = (list.filters.only_debt ?? "true") !== "false";
-  const overdueOnly = list.filters.overdue === "true";
+  const onlyDebt = (list.filters.only_debt ?? 'true') !== 'false';
+  const overdueOnly = list.filters.overdue === 'true';
 
   const [student, setStudent] = useState<DebtRow | null>(null);
   const { data: studentCharges } = useChargeList({
@@ -70,32 +71,40 @@ export default function FinanceDebtsPage() {
         subtitle="Hisob-fakturalar asosida o'quvchilar kesimidagi qoldiq"
       />
 
+      {allDebts && !totalsComplete && (
+        <p role="status" className="text-sm text-ink-muted">
+          Umumiy ko'rsatkichlar barcha yozuvlar yuklanmagani uchun ko'rsatilmaydi.
+        </p>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         <StatCard
           label="Umumiy qarz"
-          value={formatMoney(totalDebt)}
-          tone={totalDebt > 0 ? "warning" : "success"}
+          value={totalsComplete ? formatMoney(totalDebt) : '?'}
+          tone={totalDebt > 0 ? 'warning' : 'success'}
           icon={<HandCoins className="h-5 w-5" />}
           size="sm"
         />
         <StatCard
           label="Muddati o'tgan"
-          value={formatMoney(overdue)}
-          tone={overdue > 0 ? "danger" : "neutral"}
+          value={totalsComplete ? formatMoney(overdue) : '?'}
+          tone={overdue > 0 ? 'danger' : 'neutral'}
           icon={<TrendingDown className="h-5 w-5" />}
           size="sm"
         />
         <StatCard
           label="Qarzdorlar"
-          value={formatNumber(debtRows.length)}
-          hint={overdueCount > 0 ? `${overdueCount} tasida muddat o'tgan` : undefined}
+          value={allDebts ? formatNumber(allDebts.count) : '?'}
+          hint={
+            totalsComplete && overdueCount > 0 ? `${overdueCount} tasida muddat o'tgan` : undefined
+          }
           tone="info"
           icon={<Users className="h-5 w-5" />}
           size="sm"
         />
         <StatCard
           label="Jami hisoblangan"
-          value={formatMoney(charged)}
+          value={totalsComplete ? formatMoney(charged) : '?'}
           tone="neutral"
           icon={<ReceiptText className="h-5 w-5" />}
           size="sm"
@@ -114,8 +123,8 @@ export default function FinanceDebtsPage() {
 
           <Select
             aria-label="Filial bo'yicha filtr"
-            value={list.filters.branch_id ?? ""}
-            onChange={(event) => list.setFilter("branch_id", event.target.value)}
+            value={list.filters.branch_id ?? ''}
+            onChange={(event) => list.setFilter('branch_id', event.target.value)}
             className="h-9 text-sm"
             wrapperClassName="w-auto min-w-[180px]"
           >
@@ -130,9 +139,7 @@ export default function FinanceDebtsPage() {
           <label className="flex items-center gap-2 text-sm text-ink-secondary">
             <Switch
               checked={onlyDebt}
-              onCheckedChange={(checked) =>
-                list.setFilter("only_debt", checked ? "true" : "false")
-              }
+              onCheckedChange={(checked) => list.setFilter('only_debt', checked ? 'true' : 'false')}
               aria-label="Faqat qarzdorlar"
             />
             Faqat qarzdorlar
@@ -141,9 +148,7 @@ export default function FinanceDebtsPage() {
           <label className="flex items-center gap-2 text-sm text-ink-secondary">
             <Switch
               checked={overdueOnly}
-              onCheckedChange={(checked) =>
-                list.setFilter("overdue", checked ? "true" : "false")
-              }
+              onCheckedChange={(checked) => list.setFilter('overdue', checked ? 'true' : 'false')}
               aria-label="Muddati o'tganlar"
             />
             Muddati o'tganlar
@@ -212,8 +217,8 @@ export default function FinanceDebtsPage() {
                   <span
                     className={
                       student.debt_tiyin > 0
-                        ? "money font-display text-lg font-extrabold text-danger-ink"
-                        : "money font-display text-lg font-extrabold text-success-ink"
+                        ? 'money font-display text-lg font-extrabold text-danger-ink'
+                        : 'money font-display text-lg font-extrabold text-success-ink'
                     }
                   >
                     {student.debt_tiyin > 0
@@ -239,15 +244,15 @@ export default function FinanceDebtsPage() {
                       {formatMoney(charge.total_tiyin ?? charge.amount_tiyin)}
                     </span>
                     <StatusBadge
-                      status={charge.status ?? "unpaid"}
+                      status={charge.status ?? 'unpaid'}
                       label={
-                        charge.status === "paid"
+                        charge.status === 'paid'
                           ? "To'langan"
-                          : charge.status === "partial"
-                            ? "Qismli"
+                          : charge.status === 'partial'
+                            ? 'Qismli'
                             : "To'lanmagan"
                       }
-                      tone={charge.is_overdue === true ? "danger" : undefined}
+                      tone={charge.is_overdue === true ? 'danger' : undefined}
                     />
                   </div>
                 </li>

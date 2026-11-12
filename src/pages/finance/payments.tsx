@@ -51,6 +51,7 @@ export default function FinancePaymentsPage() {
 
   const payments = page?.results ?? [];
   const allPayments = totalsPage?.results ?? [];
+  const totalsComplete = !!totalsPage && totalsPage.count <= allPayments.length;
   const methodRecords = methodsData?.results ?? [];
 
   const methodOptions = methodRecords.map((method) => ({
@@ -90,24 +91,30 @@ export default function FinancePaymentsPage() {
         }
       />
 
+      {totalsPage && !totalsComplete && (
+        <p role="status" className="text-sm text-ink-muted">
+          Umumiy ko'rsatkichlar barcha yozuvlar yuklanmagani uchun ko'rsatilmaydi.
+        </p>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
         <StatCard
           label="Jami tushum"
-          value={formatMoney(total)}
+          value={totalsComplete ? formatMoney(total) : '?'}
           tone="success"
           icon={<TrendingUp className="h-5 w-5" />}
           size="sm"
         />
         <StatCard
           label="O'rtacha to'lov"
-          value={formatMoney(average)}
+          value={totalsComplete ? formatMoney(average) : '?'}
           tone="info"
           icon={<Wallet className="h-5 w-5" />}
           size="sm"
         />
         <StatCard
           label="To'lovlar soni"
-          value={allPayments.length}
+          value={totalsPage?.count ?? '?'}
           tone="neutral"
           icon={<Receipt className="h-5 w-5" />}
           size="sm"

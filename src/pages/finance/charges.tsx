@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { CalendarPlus, HandCoins, ReceiptText, TrendingUp, Wallet } from "lucide-react";
+import { useState } from 'react';
+import { CalendarPlus, HandCoins, ReceiptText, TrendingUp, Wallet } from 'lucide-react';
 
 import {
   ChargeAccrualForm,
@@ -14,15 +14,15 @@ import {
   type Charge,
   type ChargeAccrualFormValues,
   type ChargeFormValues,
-} from "@/modules/finance";
-import { useGroupList } from "@/modules/groups";
-import { Button } from "@/shared/ui/button";
-import { Card } from "@/shared/ui/card";
-import { ConfirmModal } from "@/shared/ui/modal";
-import { PageHeader } from "@/shared/ui/page-header";
-import { Pagination } from "@/shared/ui/pagination";
-import { SearchInput } from "@/shared/ui/search-input";
-import { Select } from "@/shared/ui/select";
+} from '@/modules/finance';
+import { useGroupList } from '@/modules/groups';
+import { Button } from '@/shared/ui/button';
+import { Card } from '@/shared/ui/card';
+import { ConfirmModal } from '@/shared/ui/modal';
+import { PageHeader } from '@/shared/ui/page-header';
+import { Pagination } from '@/shared/ui/pagination';
+import { SearchInput } from '@/shared/ui/search-input';
+import { Select } from '@/shared/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -31,13 +31,13 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/shared/ui/sheet";
-import { StatCard } from "@/shared/ui/stat-card";
-import { formatMoney, tiyinToSom } from "@/shared/lib";
-import { useListState } from "@/shared/model";
+} from '@/shared/ui/sheet';
+import { StatCard } from '@/shared/ui/stat-card';
+import { formatMoney, tiyinToSom } from '@/shared/lib';
+import { useListState } from '@/shared/model';
 
-const ACCRUAL_FORM_ID = "charge-accrual-form";
-const CHARGE_FORM_ID = "charge-form";
+const ACCRUAL_FORM_ID = 'charge-accrual-form';
+const CHARGE_FORM_ID = 'charge-form';
 
 export default function FinanceChargesPage() {
   const list = useListState({ pageSize: 10 });
@@ -49,6 +49,7 @@ export default function FinanceChargesPage() {
 
   const charges = page?.results ?? [];
   const allCharges = totals?.results ?? [];
+  const totalsComplete = !!totals && totals.count <= allCharges.length;
 
   const charged = allCharges.reduce((sum, charge) => sum + (charge.total_tiyin ?? 0), 0);
   const paid = allCharges.reduce((sum, charge) => sum + (charge.paid_tiyin ?? 0), 0);
@@ -68,7 +69,7 @@ export default function FinanceChargesPage() {
   const [deleting, setDeleting] = useState<Charge | null>(null);
 
   const accrue = useChargeAccrue(() => setAccrualOpen(false));
-  const update = useChargeUpdate(editing?.id ?? "", () => setEditing(null));
+  const update = useChargeUpdate(editing?.id ?? '', () => setEditing(null));
   const remove = useChargeRemove(() => setDeleting(null));
 
   const filtered = Boolean(list.search || list.activeFilterCount);
@@ -86,32 +87,38 @@ export default function FinanceChargesPage() {
         }
       />
 
+      {totals && !totalsComplete && (
+        <p role="status" className="text-sm text-ink-muted">
+          Umumiy ko'rsatkichlar barcha yozuvlar yuklanmagani uchun ko'rsatilmaydi.
+        </p>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         <StatCard
           label="Hisoblangan"
-          value={formatMoney(charged)}
+          value={totalsComplete ? formatMoney(charged) : '?'}
           tone="info"
           icon={<ReceiptText className="h-5 w-5" />}
           size="sm"
         />
         <StatCard
           label="To'langan"
-          value={formatMoney(paid)}
+          value={totalsComplete ? formatMoney(paid) : '?'}
           tone="success"
           icon={<TrendingUp className="h-5 w-5" />}
           size="sm"
         />
         <StatCard
           label="Qarz"
-          value={formatMoney(Math.max(0, charged - paid))}
-          tone={charged - paid > 0 ? "warning" : "success"}
+          value={totalsComplete ? formatMoney(Math.max(0, charged - paid)) : '?'}
+          tone={charged - paid > 0 ? 'warning' : 'success'}
           icon={<HandCoins className="h-5 w-5" />}
           size="sm"
         />
         <StatCard
           label="Muddati o'tgan"
-          value={formatMoney(overdue)}
-          tone={overdue > 0 ? "danger" : "neutral"}
+          value={totalsComplete ? formatMoney(overdue) : '?'}
+          tone={overdue > 0 ? 'danger' : 'neutral'}
           icon={<Wallet className="h-5 w-5" />}
           size="sm"
         />
@@ -129,8 +136,8 @@ export default function FinanceChargesPage() {
 
           <Select
             aria-label="Guruh bo'yicha filtr"
-            value={list.filters.group_id ?? ""}
-            onChange={(event) => list.setFilter("group_id", event.target.value)}
+            value={list.filters.group_id ?? ''}
+            onChange={(event) => list.setFilter('group_id', event.target.value)}
             className="h-9 text-sm"
             wrapperClassName="w-auto min-w-[180px] max-w-[240px]"
           >
@@ -144,8 +151,8 @@ export default function FinanceChargesPage() {
 
           <Select
             aria-label="Davr bo'yicha filtr"
-            value={list.filters.period ?? ""}
-            onChange={(event) => list.setFilter("period", event.target.value)}
+            value={list.filters.period ?? ''}
+            onChange={(event) => list.setFilter('period', event.target.value)}
             className="h-9 text-sm"
             wrapperClassName="w-auto min-w-[150px]"
           >
@@ -159,8 +166,8 @@ export default function FinanceChargesPage() {
 
           <Select
             aria-label="Holat bo'yicha filtr"
-            value={list.filters.status ?? ""}
-            onChange={(event) => list.setFilter("status", event.target.value)}
+            value={list.filters.status ?? ''}
+            onChange={(event) => list.setFilter('status', event.target.value)}
             className="h-9 text-sm"
             wrapperClassName="w-auto min-w-[150px]"
           >
@@ -171,7 +178,7 @@ export default function FinanceChargesPage() {
           </Select>
 
           <span className="ml-auto text-sm text-ink-muted">
-            <span className="money font-semibold text-ink">{page?.count ?? 0}</span> ta yozuv ·{" "}
+            <span className="money font-semibold text-ink">{page?.count ?? 0}</span> ta yozuv ·{' '}
             {openCount} ta yopilmagan
           </span>
         </div>
@@ -246,7 +253,7 @@ export default function FinanceChargesPage() {
             <div>
               <SheetTitle>Hisob-fakturani tahrirlash</SheetTitle>
               <SheetDescription>
-                {editing?.student_name ?? "O'quvchi"} · {editing?.group_name ?? "Guruh"}
+                {editing?.student_name ?? "O'quvchi"} · {editing?.group_name ?? 'Guruh'}
               </SheetDescription>
             </div>
           </SheetHeader>

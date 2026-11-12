@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router";
-import { ArrowRight, HandCoins, ReceiptText, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { Link } from '@tanstack/react-router';
+import { ArrowRight, HandCoins, ReceiptText, TrendingDown, TrendingUp, Wallet } from 'lucide-react';
 
 import {
   useChargeList,
@@ -8,13 +8,13 @@ import {
   usePaymentList,
   formatPeriod,
   type DebtRow,
-} from "@/modules/finance";
-import { Card } from "@/shared/ui/card";
-import { Chip } from "@/shared/ui/chip";
-import { EmptyState } from "@/shared/ui/empty-state";
-import { StatCard } from "@/shared/ui/stat-card";
-import { formatDate, formatMoney, formatNumber } from "@/shared/lib";
-import { PageHeader } from "@/shared/ui/page-header";
+} from '@/modules/finance';
+import { Card } from '@/shared/ui/card';
+import { Chip } from '@/shared/ui/chip';
+import { EmptyState } from '@/shared/ui/empty-state';
+import { StatCard } from '@/shared/ui/stat-card';
+import { formatDate, formatMoney, formatNumber } from '@/shared/lib';
+import { PageHeader } from '@/shared/ui/page-header';
 
 /**
  * Moliya bo'limining umumiy ko'rinishi.
@@ -23,15 +23,19 @@ import { PageHeader } from "@/shared/ui/page-header";
  * Real backend'da bu ko'rsatkichlar `/reports/finance/` dan olinadi.
  */
 export default function FinanceOverviewPage() {
-  const { data: payments } = usePaymentList({ page: 1, page_size: 500, ordering: "-paid_at" });
+  const { data: payments } = usePaymentList({ page: 1, page_size: 500, ordering: '-paid_at' });
   const { data: expenses } = useExpenseList({ page: 1, page_size: 500 });
   const { data: charges } = useChargeList({ page: 1, page_size: 500 });
-  const { data: debts } = useDebtList({ page: 1, page_size: 500, only_debt: "true" });
+  const { data: debts } = useDebtList({ page: 1, page_size: 500, only_debt: 'true' });
 
   const paymentRows = payments?.results ?? [];
   const expenseRows = expenses?.results ?? [];
   const chargeRows = charges?.results ?? [];
   const debtRows: DebtRow[] = debts?.results ?? [];
+  const paymentsComplete = !!payments && payments.count <= paymentRows.length;
+  const expensesComplete = !!expenses && expenses.count <= expenseRows.length;
+  const chargesComplete = !!charges && charges.count <= chargeRows.length;
+  const debtsComplete = !!debts && debts.count <= debtRows.length;
 
   const revenue = paymentRows.reduce((sum, item) => sum + item.amount_tiyin, 0);
   const spending = expenseRows.reduce((sum, item) => sum + item.amount_tiyin, 0);
@@ -59,29 +63,38 @@ export default function FinanceOverviewPage() {
         }
       />
 
+      {((payments && !paymentsComplete) ||
+        (expenses && !expensesComplete) ||
+        (charges && !chargesComplete) ||
+        (debts && !debtsComplete)) && (
+        <p role="status" className="text-sm text-ink-muted">
+          Umumiy ko'rsatkichlar barcha yozuvlar yuklanmagani uchun ko'rsatilmaydi.
+        </p>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         <StatCard
           label="Tushum"
-          value={formatMoney(revenue)}
+          value={paymentsComplete ? formatMoney(revenue) : '?'}
           tone="success"
           icon={<TrendingUp className="h-5 w-5" />}
         />
         <StatCard
           label="Xarajat"
-          value={formatMoney(spending)}
+          value={expensesComplete ? formatMoney(spending) : '?'}
           tone="danger"
           icon={<TrendingDown className="h-5 w-5" />}
         />
         <StatCard
           label="Sof foyda"
-          value={formatMoney(net)}
-          tone={net >= 0 ? "info" : "danger"}
+          value={paymentsComplete && expensesComplete ? formatMoney(net) : '?'}
+          tone={net >= 0 ? 'info' : 'danger'}
           icon={<Wallet className="h-5 w-5" />}
         />
         <StatCard
           label="Umumiy qarz"
-          value={formatMoney(totalDebt)}
-          tone={totalDebt > 0 ? "warning" : "success"}
+          value={debtsComplete ? formatMoney(totalDebt) : '?'}
+          tone={totalDebt > 0 ? 'warning' : 'success'}
           icon={<HandCoins className="h-5 w-5" />}
         />
       </div>
@@ -93,8 +106,10 @@ export default function FinanceOverviewPage() {
               Hisob-fakturalar
             </p>
             <p className="mt-1 text-sm text-ink-secondary">
-              <span className="money font-semibold text-ink">{formatNumber(openCharges)}</span> ta
-              yopilmagan yozuv
+              <span className="money font-semibold text-ink">
+                {chargesComplete ? formatNumber(openCharges) : '?'}
+              </span>{' '}
+              ta yopilmagan yozuv
             </p>
           </div>
           <Link
@@ -112,8 +127,10 @@ export default function FinanceOverviewPage() {
               Muddati o'tgan
             </p>
             <p className="mt-1 text-sm text-ink-secondary">
-              <span className="money font-semibold text-danger-ink">{formatMoney(overdue)}</span> —
-              shu oylar uchun
+              <span className="money font-semibold text-danger-ink">
+                {debtsComplete ? formatMoney(overdue) : '?'}
+              </span>{' '}
+              — shu oylar uchun
             </p>
           </div>
           <Link
@@ -153,7 +170,7 @@ export default function FinanceOverviewPage() {
                       {payment.student_name ?? "O'quvchi"}
                     </p>
                     <p className="od-truncate text-xs text-ink-muted">
-                      {payment.group_name ?? "—"} · {formatDate(payment.paid_at)}
+                      {payment.group_name ?? '—'} · {formatDate(payment.paid_at)}
                     </p>
                   </div>
                   <span className="money flex-none font-semibold text-success-ink">
@@ -185,14 +202,17 @@ export default function FinanceOverviewPage() {
           ) : (
             <ul className="divide-y divide-divider">
               {topDebts.map((row) => (
-                <li key={row.student_id} className="flex items-center justify-between gap-4 px-5 py-3">
+                <li
+                  key={row.student_id}
+                  className="flex items-center justify-between gap-4 px-5 py-3"
+                >
                   <div className="min-w-0">
                     <p className="od-truncate font-medium text-ink">{row.student_name}</p>
                     <p className="od-truncate text-xs text-ink-muted">
-                      {row.group_names ?? "—"}
+                      {row.group_names ?? '—'}
                       {row.overdue_tiyin > 0 && (
                         <>
-                          {" "}
+                          {' '}
                           <Chip tone="danger" dot>
                             {formatMoney(row.overdue_tiyin)}
                           </Chip>
@@ -216,7 +236,7 @@ export default function FinanceOverviewPage() {
           Billing davrlari
         </Chip>
         <p className="text-sm text-ink-secondary">
-          Hisob-fakturalar {(charges?.count ?? 0) > 0 ? formatPeriod(chargeRows[0]?.period) : "—"}{" "}
+          Hisob-fakturalar {(charges?.count ?? 0) > 0 ? formatPeriod(chargeRows[0]?.period) : '—'}{' '}
           dan boshlab yuritiladi.
         </p>
       </Card>
