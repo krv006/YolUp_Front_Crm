@@ -18,7 +18,7 @@ export default defineConfig({
     proxy: {
       // Forward /api to the Django backend during development
       '/api': {
-        target: 'https://api.yolup.uz',
+        target: 'https://tenant-api.yolup.uz',
         changeOrigin: true,
         secure: true,
       },
